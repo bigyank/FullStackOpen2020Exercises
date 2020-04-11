@@ -13,18 +13,19 @@ const App = () => {
     good: 0,
     neutral: 0,
     bad: 0,
+    total: 0,
   });
 
   const addGood = () => {
-    setCount({ ...count, good: count.good + 1 });
+    setCount({ ...count, good: count.good + 1, total: count.total + 1 });
   };
 
   const addNeutral = () => {
-    setCount({ ...count, neutral: count.neutral + 1 });
+    setCount({ ...count, neutral: count.neutral + 1, total: count.total + 1 });
   };
 
   const addBad = () => {
-    setCount({ ...count, bad: count.bad + 1 });
+    setCount({ ...count, bad: count.bad + 1, total: count.total + 1 });
   };
   return (
     <div>
@@ -36,6 +37,8 @@ const App = () => {
       <p>Good {count.good}</p>
       <p>Neutral {count.neutral}</p>
       <p>Bad {count.bad}</p>
+      <p>Average {(count.good - count.bad) / count.total}</p>
+      <p>Positive {(count.good / count.total) * 100}%</p>
     </div>
   );
 };
