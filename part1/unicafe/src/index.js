@@ -3,11 +3,44 @@ import ReactDOM from "react-dom";
 
 const Button = ({ action, text }) => {
   return (
-    <div>
+    <>
       <button onClick={action}>{text}</button>
+    </>
+  );
+};
+
+const Statistic = ({ name, value }) => (
+  <tr>
+    <td>{name}:</td>
+    <td>{value}</td>
+  </tr>
+);
+
+const Statistics = ({ data: { good, neutral, bad, total } }) => {
+  if (total === 0) {
+    return (
+      <div>
+        <h2>No feedback given</h2>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <h2>statistics</h2>
+      <table>
+        <tbody>
+          <Statistic name="Good" value={good} />
+          <Statistic name="Neutral" value={neutral} />
+          <Statistic name="Bad" value={bad} />
+          <Statistic name="All" value={total} />
+          <Statistic name="Average" value={(good - bad) / total} />
+          <Statistic name="Positive" value={(good / total) * 100 + "%"} />
+        </tbody>
+      </table>
     </div>
   );
 };
+
 const App = () => {
   const [count, setCount] = useState({
     good: 0,
@@ -16,29 +49,22 @@ const App = () => {
     total: 0,
   });
 
-  const addGood = () => {
-    setCount({ ...count, good: count.good + 1, total: count.total + 1 });
+  const increaseVal = (text) => {
+    return () => {
+      const newValue = { ...count };
+      newValue[text] = count[text] + 1;
+      newValue.total = count.total + 1;
+      setCount(newValue);
+    };
   };
 
-  const addNeutral = () => {
-    setCount({ ...count, neutral: count.neutral + 1, total: count.total + 1 });
-  };
-
-  const addBad = () => {
-    setCount({ ...count, bad: count.bad + 1, total: count.total + 1 });
-  };
   return (
     <div>
       <h1>Give Feedback</h1>
-      <Button action={addGood} text="Good" />
-      <Button action={addNeutral} text="Neutral" />
-      <Button action={addBad} text="Bad" />
-      <h2>statistics</h2>
-      <p>Good {count.good}</p>
-      <p>Neutral {count.neutral}</p>
-      <p>Bad {count.bad}</p>
-      <p>Average {(count.good - count.bad) / count.total}</p>
-      <p>Positive {(count.good / count.total) * 100}%</p>
+      <Button action={increaseVal("good")} text="Good" />
+      <Button action={increaseVal("neutral")} text="Neutral" />
+      <Button action={increaseVal("bad")} text="Bad" />
+      <Statistics data={count} />
     </div>
   );
 };
