@@ -51,10 +51,7 @@ const App = () => {
 
   const increaseVal = (text) => {
     return () => {
-      const newValue = { ...count };
-      newValue[text] = count[text] + 1;
-      newValue.total = count.total + 1;
-      setCount(newValue);
+      setCount({ ...count, [text]: count[text] + 1, total: count.total + 1 });
     };
   };
 
