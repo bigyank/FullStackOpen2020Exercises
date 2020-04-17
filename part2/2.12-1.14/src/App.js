@@ -23,7 +23,11 @@ const App = () => {
     <div>
       <h1>Country Finder</h1>
       <Input name="Country" onChange={handleInput} />
-      <Display userInp={country} countryData={countryapi} />
+      <Display
+        userInp={country}
+        countryData={countryapi}
+        setCountry={setCountry}
+      />
     </div>
   );
 };

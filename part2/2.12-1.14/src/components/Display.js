@@ -1,7 +1,7 @@
 import React from "react";
 
 const DisplaySingle = ({ countryData, matched }) => {
-  const data = countryData.find((country) => country.name === matched[0]);
+  const data = countryData.find((country) => country.name === matched);
   return (
     <div>
       <h1>{data.name}</h1>
@@ -18,7 +18,7 @@ const DisplaySingle = ({ countryData, matched }) => {
   );
 };
 
-const Display = ({ userInp, countryData }) => {
+const Display = ({ userInp, countryData, setCountry }) => {
   // return nothing is there is no user input
   if (!userInp) {
     return null;
@@ -26,20 +26,25 @@ const Display = ({ userInp, countryData }) => {
 
   const matched = countryData
     .map((country) => country.name)
-    .filter((name) => name.toLowerCase().includes(userInp.toLowerCase()));
+    .filter((country) => country.toLowerCase().includes(userInp.toLowerCase()));
 
   if (matched.length > 10) {
     return <p>Too many matches, Be more precise</p>;
   }
 
   if (matched.length === 1) {
-    return <DisplaySingle countryData={countryData} matched={matched} />;
+    return <DisplaySingle countryData={countryData} matched={matched[0]} />;
   }
 
   return (
     <div>
       {matched.map((country) => {
-        return <p key={country}>{country}</p>;
+        return (
+          <section key={country}>
+            <span>{country}</span>
+            <button onClick={() => setCountry(country)}>Show Info</button>
+          </section>
+        );
       })}
     </div>
   );
