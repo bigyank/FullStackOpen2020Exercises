@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import personService from "./services/persons";
 
 const Form = ({ addNote, handleInputName, handleInputPhone }) => {
   return (
@@ -18,10 +19,36 @@ const Input = ({ onChange, name }) => (
   </div>
 );
 
-const DisplayPerson = ({ phonebook, keyWord }) => {
+const DeleteBtn = ({ name, id, onClick }) => {
+  return (
+    <button
+      onClick={() => {
+        onClick(name, id);
+      }}
+    >
+      Delete
+    </button>
+  );
+};
+
+const DisplayPerson = ({ phonebook, keyWord, deletePerson }) => {
   if (!keyWord) {
-    return <></>;
+    return (
+      <div>
+        {phonebook.map((person) => (
+          <p key={person.name}>
+            {person.name} {person.number}
+            <DeleteBtn
+              name={person.name}
+              id={person.id}
+              onClick={deletePerson}
+            />
+          </p>
+        ))}
+      </div>
+    );
   }
+
   const match = phonebook.filter((item) =>
     item.name.toLowerCase().includes(keyWord.toLowerCase())
   );
@@ -40,13 +67,46 @@ const App = () => {
 
   const addNote = (event) => {
     event.preventDefault();
-    const isdublicate = persons.find((person) => person.name === newName);
+    const isdublicate = persons.find(
+      (person) => person.name.toLowerCase() === newName.toLowerCase()
+    );
+    const newPerson = { ...isdublicate, name: newName, number: newPhone };
     if (isdublicate) {
-      return alert(`${newName} is already added to the phone book`);
+      const replaceNum = window.confirm(
+        `${newName} is already added to the phone book
+        Do you want to replace the Number?`
+      );
+      if (!replaceNum) {
+        return null;
+      }
+      return personService
+        .updatePerson(newPerson.id, newPerson)
+        .then((changedPerson) => {
+          const updatedPersons = persons.map((person) =>
+            person.id !== newPerson.id ? person : changedPerson
+          );
+          return updatedPersons;
+        })
+        .then(setPersons);
     }
-    const newPerson = { name: newName, number: newPhone };
-    setPersons([...persons, newPerson]);
+
+    personService
+      .postPerson(newPerson)
+      .then((response) => setPersons([...persons, response]))
+      .catch((e) => console.log(e));
     alert(`${newName} and ${newPhone} added to PhoneBook`);
+  };
+
+  const deleteNote = (name, id) => {
+    const result = window.confirm(`Delete ${name}`);
+    if (!result) {
+      return null;
+    }
+    const newPersons = persons.filter((person) => person.id !== id);
+    personService
+      .deletePerson(id)
+      .then(() => setPersons(newPersons))
+      .catch((e) => console.log(e));
   };
 
   const handleInputName = (event) => {
@@ -72,7 +132,11 @@ const App = () => {
         handleInputPhone={handleInputPhone}
       />
       <h2>Numbers</h2>
-      <DisplayPerson phonebook={persons} keyWord={searchName} />
+      <DisplayPerson
+        phonebook={persons}
+        keyWord={searchName}
+        deletePerson={deleteNote}
+      />
     </div>
   );
 };

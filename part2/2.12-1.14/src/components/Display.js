@@ -47,7 +47,7 @@ const DisplayWeather = ({ countryData, matched }) => {
       <img
         src={weather.current.weather_icons[0]}
         alt={data.capital + "weather"}
-        height="100px"
+        height="50px"
       ></img>
     </div>
   );
