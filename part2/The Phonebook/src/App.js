@@ -1,69 +1,17 @@
 import React, { useState } from "react";
 import personService from "./services/persons";
-
-const Form = ({ addNote, handleInputName, handleInputPhone }) => {
-  return (
-    <form onSubmit={addNote}>
-      <Input name="Name" onChange={handleInputName} />
-      <Input name="Phone" onChange={handleInputPhone} />
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  );
-};
-
-const Input = ({ onChange, name }) => (
-  <div>
-    {name} <input onChange={onChange}></input>
-  </div>
-);
-
-const DeleteBtn = ({ name, id, onClick }) => {
-  return (
-    <button
-      onClick={() => {
-        onClick(name, id);
-      }}
-    >
-      Delete
-    </button>
-  );
-};
-
-const DisplayPerson = ({ phonebook, keyWord, deletePerson }) => {
-  if (!keyWord) {
-    return (
-      <div>
-        {phonebook.map((person) => (
-          <p key={person.name}>
-            {person.name} {person.number}
-            <DeleteBtn
-              name={person.name}
-              id={person.id}
-              onClick={deletePerson}
-            />
-          </p>
-        ))}
-      </div>
-    );
-  }
-
-  const match = phonebook.filter((item) =>
-    item.name.toLowerCase().includes(keyWord.toLowerCase())
-  );
-  return match.map((item) => (
-    <p key={item.name}>
-      {item.name} {item.number}
-    </p>
-  ));
-};
+import Form from "./components/Form";
+import DisplayPerson from "./components/Display";
+import Search from "./components/Search";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setPhone] = useState("");
   const [searchName, setSearchName] = useState("");
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
 
   const addNote = (event) => {
     event.preventDefault();
@@ -87,14 +35,25 @@ const App = () => {
           );
           return updatedPersons;
         })
-        .then(setPersons);
+        .then(setPersons)
+        .catch((e) => console.log(e));
     }
 
     personService
       .postPerson(newPerson)
-      .then((response) => setPersons([...persons, response]))
-      .catch((e) => console.log(e));
-    alert(`${newName} and ${newPhone} added to PhoneBook`);
+      .then((response) => {
+        setPersons([...persons, response]);
+        setMessage(`added ${newPerson.name}`);
+        setMessageType("add");
+        setTimeout(() => setMessageType(null), 5000);
+      })
+      .catch(() => {
+        setMessage(`Unable to add ${newPerson.name}`);
+        setMessageType("error");
+        setTimeout(() => {
+          setMessageType(null);
+        }, 5000);
+      });
   };
 
   const deleteNote = (name, id) => {
@@ -123,15 +82,14 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <h2>Search</h2>
-      <Input onChange={handleSearch}></Input>
-      <h2>Add a New Phone Book</h2>
+      <Notification type={messageType} message={message} />
+      <Search handleSearch={handleSearch} />
       <Form
         addNote={addNote}
         handleInputName={handleInputName}
         handleInputPhone={handleInputPhone}
       />
-      <h2>Numbers</h2>
+      <h2>Search Result</h2>
       <DisplayPerson
         phonebook={persons}
         keyWord={searchName}
