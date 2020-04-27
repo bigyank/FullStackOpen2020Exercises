@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import personService from "./services/persons";
 import Form from "./components/Form";
 import DisplayPerson from "./components/Display";
@@ -10,16 +10,26 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhone, setPhone] = useState("");
   const [searchName, setSearchName] = useState("");
-  const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState(null);
+  const [notification, setNotification] = useState(null);
 
-  const addNote = (event) => {
+  useEffect(() => {
+    personService.getAll().then(setPersons);
+  }, []);
+
+  const notifyWith = (message, type = "success") => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
+
+  const addPerson = (event) => {
     event.preventDefault();
-    const isdublicate = persons.find(
+    const oldPerson = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase()
     );
-    const newPerson = { ...isdublicate, name: newName, number: newPhone };
-    if (isdublicate) {
+    const newPerson = { ...oldPerson, name: newName, number: newPhone };
+    if (oldPerson) {
       const replaceNum = window.confirm(
         `${newName} is already added to the phone book
         Do you want to replace the Number?`
@@ -35,28 +45,29 @@ const App = () => {
           );
           return updatedPersons;
         })
-        .then(setPersons)
-        .catch((e) => console.log(e));
+        .then((updatePerson) => {
+          setPersons(updatePerson);
+          notifyWith(`${newPerson.name} updated sucessfully`);
+        })
+        .catch((e) => {
+          console.log(e);
+          notifyWith(`unable to update ${newPerson.name}`, "error");
+        });
     }
 
     personService
       .postPerson(newPerson)
       .then((response) => {
         setPersons([...persons, response]);
-        setMessage(`added ${newPerson.name}`);
-        setMessageType("add");
-        setTimeout(() => setMessageType(null), 5000);
+        notifyWith(`${newPerson.name} added sucessfully`);
       })
-      .catch(() => {
-        setMessage(`Unable to add ${newPerson.name}`);
-        setMessageType("error");
-        setTimeout(() => {
-          setMessageType(null);
-        }, 5000);
+      .catch((e) => {
+        console.log(e);
+        notifyWith(`Unable to add ${newPerson.name}`, "error");
       });
   };
 
-  const deleteNote = (name, id) => {
+  const deletePerson = (name, id) => {
     const result = window.confirm(`Delete ${name}`);
     if (!result) {
       return null;
@@ -64,8 +75,14 @@ const App = () => {
     const newPersons = persons.filter((person) => person.id !== id);
     personService
       .deletePerson(id)
-      .then(() => setPersons(newPersons))
-      .catch((e) => console.log(e));
+      .then(() => {
+        setPersons(newPersons);
+        notifyWith(`Deleted ${name}`, "error");
+      })
+      .catch((e) => {
+        console.log(e);
+        notifyWith(`Unable to delete ${name}`, "error");
+      });
   };
 
   const handleInputName = (event) => {
@@ -82,10 +99,10 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification type={messageType} message={message} />
+      <Notification notification={notification} />
       <Search handleSearch={handleSearch} />
       <Form
-        addNote={addNote}
+        addPerson={addPerson}
         handleInputName={handleInputName}
         handleInputPhone={handleInputPhone}
       />
@@ -93,7 +110,7 @@ const App = () => {
       <DisplayPerson
         phonebook={persons}
         keyWord={searchName}
-        deletePerson={deleteNote}
+        deletePerson={deletePerson}
       />
     </div>
   );

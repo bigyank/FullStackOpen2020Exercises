@@ -1,11 +1,11 @@
 import React from "react";
 import Input from "./Input";
 
-const Form = ({ addNote, handleInputName, handleInputPhone }) => {
+const Form = ({ addPerson, handleInputName, handleInputPhone }) => {
   return (
     <div>
       <h2>Add a New Phone Book</h2>
-      <form onSubmit={addNote}>
+      <form onSubmit={addPerson}>
         <Input name="Name" onChange={handleInputName} />
         <Input name="Phone" onChange={handleInputPhone} />
         <div>

@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:3001/persons";
+const baseURL = "/api/persons";
+
+const getAll = () => {
+  return axios.get(baseURL).then((response) => response.data);
+};
 
 const postPerson = (data) => {
   return axios.post(baseURL, data).then((response) => response.data);
@@ -16,4 +20,4 @@ const deletePerson = (id) => {
   return axios.delete(baseURL.concat("/", id));
 };
 
-export default { postPerson, updatePerson, deletePerson };
+export default { getAll, postPerson, updatePerson, deletePerson };
