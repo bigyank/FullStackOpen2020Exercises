@@ -68,6 +68,7 @@ const App = () => {
   };
 
   const deletePerson = (name, id) => {
+    console.log(id);
     const result = window.confirm(`Delete ${name}`);
     if (!result) {
       return null;
