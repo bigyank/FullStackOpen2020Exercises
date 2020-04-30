@@ -62,13 +62,11 @@ const App = () => {
         notifyWith(`${newPerson.name} added sucessfully`);
       })
       .catch((e) => {
-        console.log(e);
-        notifyWith(`Unable to add ${newPerson.name}`, "error");
+        notifyWith(`${e.response.data.error}`, "error");
       });
   };
 
   const deletePerson = (name, id) => {
-    console.log(id);
     const result = window.confirm(`Delete ${name}`);
     if (!result) {
       return null;
@@ -107,7 +105,6 @@ const App = () => {
         handleInputName={handleInputName}
         handleInputPhone={handleInputPhone}
       />
-      <h2>Search Result</h2>
       <DisplayPerson
         phonebook={persons}
         keyWord={searchName}
