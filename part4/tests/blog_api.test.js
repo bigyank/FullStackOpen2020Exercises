@@ -128,6 +128,22 @@ describe('deletion of a specific blog', () => {
   });
 });
 
+describe('updating a field on a blog', () => {
+  test('feild on blogs get updated', async () => {
+    const blogs = await helper.blogsInDb();
+    const beforeUpdate = blogs[0];
+
+    const update = { likes: 10 };
+
+    const afterUpdate = await api
+      .put(`/api/blogs/${beforeUpdate.id}`)
+      .send(update)
+      .expect(200);
+
+    expect(afterUpdate.body.likes).toBe(10);
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
