@@ -15,16 +15,22 @@ const blogSchema = new Schema({
     type: Number,
     default: 0,
   },
-  author: String,
+  author: {
+    type: String,
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 blogSchema.methods.toJSON = function () {
-  const user = this;
-  const userData = user.toObject();
-  userData.id = userData._id.toString();
-  delete userData._id;
-  delete userData.__v;
-  return userData;
+  const blog = this;
+  const blogData = blog.toObject();
+  blogData.id = blogData._id.toString();
+  delete blogData._id;
+  delete blogData.__v;
+  return blogData;
 };
 
 const Blog = model('Blog', blogSchema);
