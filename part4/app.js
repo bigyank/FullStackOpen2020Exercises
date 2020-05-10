@@ -4,6 +4,7 @@ require('express-async-errors');
 const cors = require('cors');
 const blogRouter = require('./controllers/blogs');
 const userRouter = require('./controllers/users');
+const loginRouter = require('./controllers/login');
 const { morgan, accessLogStream } = require('./utils/logger');
 const { unknownEndpoint, errorHandler } = require('./utils/middleware');
 
@@ -19,6 +20,7 @@ app.use(
   )
 );
 
+app.use('/', loginRouter);
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', userRouter);
 app.use(unknownEndpoint);

@@ -27,6 +27,7 @@ describe('when creating users', () => {
     const password = await bcrypt.hash('secret', 10);
     const validUser = {
       username: 'valid',
+      name: 'valid',
       password,
     };
 
@@ -44,7 +45,7 @@ describe('when creating users', () => {
   });
 
   test('user creation fails for dublicate username with code 400', async () => {
-    const invalidUser = { username: 'root', password: 'random' };
+    const invalidUser = { username: 'root', name: 'root', password: 'random' };
     const result = await api
       .post('/api/users')
       .send(invalidUser)
@@ -54,6 +55,33 @@ describe('when creating users', () => {
     const allUsers = await helper.usersInDb();
     expect(result.body.error).toContain('`username` to be unique');
     expect(allUsers).toHaveLength(helper.initialUsers.length);
+  });
+
+  test('user creation fails for password of lenght less than 3 with code 400', async () => {
+    const user = {
+      username: 'user',
+      name: 'user',
+      password: 'a',
+    };
+    await api
+      .post('/api/users')
+      .send(user)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test.only('user creation fails with username lenght less than 3 with code 400', async () => {
+    const user = {
+      username: 'a',
+      password: 'password',
+      name: 'test',
+    };
+
+    await api
+      .post('/api/users')
+      .send(user)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
   });
 });
 
