@@ -29,15 +29,14 @@ const userSchema = new Schema({
 
 userSchema.plugin(uniqueValidator);
 
-userSchema.methods.toJSON = function () {
-  const user = this;
-  const userData = user.toObject();
-  userData.id = userData._id.toString();
-  delete userData._id;
-  delete userData.__v;
-  delete userData.password;
-  return userData;
-};
+userSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+    delete returnedObject.password;
+  },
+});
 
 const User = model('User', userSchema);
 

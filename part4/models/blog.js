@@ -24,14 +24,13 @@ const blogSchema = new Schema({
   },
 });
 
-blogSchema.methods.toJSON = function () {
-  const blog = this;
-  const blogData = blog.toObject();
-  blogData.id = blogData._id.toString();
-  delete blogData._id;
-  delete blogData.__v;
-  return blogData;
-};
+blogSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
 
 const Blog = model('Blog', blogSchema);
 
