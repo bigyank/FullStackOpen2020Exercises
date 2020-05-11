@@ -70,7 +70,7 @@ describe('when creating users', () => {
       .expect('Content-Type', /application\/json/);
   });
 
-  test.only('user creation fails with username lenght less than 3 with code 400', async () => {
+  test('user creation fails with username lenght less than 3 with code 400', async () => {
     const user = {
       username: 'a',
       password: 'password',

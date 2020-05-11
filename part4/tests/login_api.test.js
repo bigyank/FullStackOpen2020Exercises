@@ -10,9 +10,10 @@ beforeEach(async () => {
   await User.deleteMany({});
   const user = {
     username: 'root',
+    name: 'root',
     password: 'root',
   };
-  await api.post('/api/users').send(user).expect(201);
+  await api.post('/api/users').send(user);
 });
 
 describe('while logging users with data', () => {

@@ -6,7 +6,6 @@ const { SECRET } = require('../utils/config');
 
 loginRouter.post('/', async (req, res) => {
   const { body } = req;
-
   if (!body.username || !body.password) {
     return res.status(401).send({ error: 'Invalid credentials' });
   }

@@ -3,13 +3,25 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const helper = require('./test_helper');
 
 const api = supertest(app);
 
 beforeEach(async () => {
+  await User.deleteMany({});
+  const user = {
+    username: 'root',
+    name: 'root',
+    password: 'root',
+  };
+  const loggedUser = await api.post('/api/users').send(user);
+
   await Blog.deleteMany({});
-  const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+  const blogObjects = helper.initialBlogs.map((blog) => {
+    const newBlog = { ...blog, user: loggedUser.body.id };
+    return new Blog(newBlog);
+  });
   const promiseArray = blogObjects.map((blog) => blog.save());
   await Promise.all(promiseArray);
 });
@@ -22,7 +34,7 @@ describe('when some blogs are initially saved', () => {
       .expect('Content-Type', /application\/json/);
   });
 
-  test('there are three blogs', async () => {
+  test('there is a single blog', async () => {
     const response = await helper.blogsInDb();
     expect(response).toHaveLength(helper.initialBlogs.length);
   });
@@ -48,8 +60,15 @@ describe('addition of new blogs', () => {
       url: 'url@4',
       likes: 4,
     };
+
+    const user = {
+      username: 'root',
+      password: 'root',
+    };
+    const loggedUser = await api.post('/').send(user);
     await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer '.concat(loggedUser.body.token))
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -66,9 +85,15 @@ describe('addition of new blogs', () => {
       author: 'author5',
       likes: 5,
     };
+    const user = {
+      username: 'root',
+      password: 'root',
+    };
+    const loggedUser = await api.post('/').send(user);
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer '.concat(loggedUser.body.token))
       .send(invalidBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/);
@@ -85,7 +110,17 @@ describe('addition of new blogs', () => {
       url: 'url@6',
     };
 
-    const returnedBlog = await api.post('/api/blogs').send(blog).expect(201);
+    const user = {
+      username: 'root',
+      password: 'root',
+    };
+
+    const loggedUser = await api.post('/').send(user);
+    const returnedBlog = await api
+      .post('/api/blogs')
+      .set('Authorization', 'Bearer '.concat(loggedUser.body.token))
+      .send(blog)
+      .expect(201);
 
     expect(returnedBlog.body.likes).toBe(0);
   });
@@ -100,7 +135,10 @@ describe('viewing a specific blog', () => {
       .get(`/api/blogs/${specificBlog.id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
-    expect(returnedBlog.body).toEqual(specificBlog);
+
+    expect(JSON.stringify(returnedBlog.body)).toEqual(
+      JSON.stringify(specificBlog)
+    );
   });
 
   test('fails with code 404 if blog doesnt exist', async () => {
@@ -116,9 +154,19 @@ describe('viewing a specific blog', () => {
 
 describe('deletion of a specific blog', () => {
   test('succeds with a valid id', async () => {
+    const user = {
+      username: 'root',
+      password: 'root',
+    };
+    const loggedUser = await api.post('/').send(user);
+
     const blogs = await helper.blogsInDb();
     const blogToDelete = blogs[0];
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', 'Bearer '.concat(loggedUser.body.token))
+      .expect(204);
 
     const changedBlogs = await helper.blogsInDb();
     expect(changedBlogs).toHaveLength(helper.initialBlogs.length - 1);
@@ -141,6 +189,26 @@ describe('updating a field on a blog', () => {
       .expect(200);
 
     expect(afterUpdate.body.likes).toBe(10);
+  });
+});
+
+describe('without authencation token', () => {
+  test('adding blogs fails with code 401', async () => {
+    const validBlog = {
+      author: 'author5',
+      url: 'url',
+      likes: 5,
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(validBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+
+    const response = await helper.blogsInDb();
+
+    expect(response).toHaveLength(helper.initialBlogs.length);
   });
 });
 

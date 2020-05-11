@@ -8,18 +8,6 @@ const initialBlogs = [
     url: 'url@1',
     likes: 1,
   },
-  {
-    title: 'title2',
-    author: 'author2',
-    url: 'url@2',
-    likes: 2,
-  },
-  {
-    title: 'title3',
-    author: 'author3',
-    url: 'url@3',
-    likes: 3,
-  },
 ];
 
 const initialUsers = [
