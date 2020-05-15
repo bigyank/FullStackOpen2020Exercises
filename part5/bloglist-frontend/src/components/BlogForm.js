@@ -7,7 +7,7 @@ const BlogForm = ({
   setNewBlog,
 }) => {
   return (
-    <form onSubmit={handleBlogSubmit}>
+    <form onSubmit={handleBlogSubmit} className="blogForm">
       <section>
         Title
         <input
@@ -19,15 +19,17 @@ const BlogForm = ({
           }
         />
       </section>
-      author
-      <input
-        type="text"
-        value={author}
-        name={"author"}
-        onChange={({ target }) =>
-          setNewBlog({ title, url, author: target.value })
-        }
-      />
+      <section>
+        author
+        <input
+          type="text"
+          value={author}
+          name={"author"}
+          onChange={({ target }) =>
+            setNewBlog({ title, url, author: target.value })
+          }
+        />
+      </section>
       <section>
         URL
         <input

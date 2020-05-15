@@ -2,6 +2,15 @@
   margin-top: 5px;
 }
 
-.blogForm section {
+.blogForm {
+  margin-top: 20px;
+}
+
+.blogForm section input {
   margin-top: 5px;
+}
+
+.blogForm button {
+  margin-top: 15px;
+  padding: 5px;
 }

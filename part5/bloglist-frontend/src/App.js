@@ -13,6 +13,7 @@ const App = () => {
     username: "",
     password: "",
   });
+
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
@@ -21,7 +22,20 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    const getBlog = async () => {
+      const blogs = await blogService.getAll();
+      setBlogs(blogs);
+    };
+    getBlog();
+  }, []);
+
+  useEffect(() => {
+    const loggedUserJson = window.localStorage.getItem("loggedUser");
+    if (loggedUserJson) {
+      const user = JSON.parse(loggedUserJson);
+      setUser(user);
+      blogService.setToken(user.token);
+    }
   }, []);
 
   const handleNotification = (message, type = "error") => {
@@ -35,6 +49,7 @@ const App = () => {
     event.preventDefault();
     try {
       const user = await loginService.login(credentials);
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
     } catch (error) {
@@ -50,8 +65,31 @@ const App = () => {
 
   const handleBlogSubmit = async (event) => {
     event.preventDefault();
-    const blog = await blogService.create(newBlog);
+    try {
+      const returnedBlog = await blogService.create(newBlog);
+      const message = `${returnedBlog.title} by ${returnedBlog.author} successfully added`;
+      handleNotification(message, "success");
+      setBlogs([...blogs, returnedBlog]);
+    } catch (error) {
+      const message = error.response.data.error;
+      handleNotification(message);
+      setTimeout(() => {
+        handleNotification(null);
+      }, 5000);
+    } finally {
+      setNewBlog({
+        title: "",
+        author: "",
+        url: "",
+      });
+    }
   };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem("loggedUser");
+    setUser(null);
+  };
+
   return (
     <div>
       <Notification notification={notification} />
@@ -64,7 +102,7 @@ const App = () => {
         />
       ) : (
         <div>
-          {user.name} logged in
+          {user.name} logged in <button onClick={handleLogout}>logout</button>
           <BlogForm
             handleBlogSubmit={handleBlogSubmit}
             newBlog={newBlog}
