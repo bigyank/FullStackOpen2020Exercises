@@ -10,11 +10,6 @@ const App = () => {
   const [notification, setNotification] = useState(null);
   const [user, setUser] = useState(null);
 
-  const [newBlog, setNewBlog] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
@@ -56,8 +51,7 @@ const App = () => {
     }
   };
 
-  const handleBlogSubmit = async (event) => {
-    event.preventDefault();
+  const addNewBlog = async (newBlog) => {
     try {
       const returnedBlog = await blogService.create(newBlog);
       const message = `${returnedBlog.title} by ${returnedBlog.author} successfully added`;
@@ -69,12 +63,6 @@ const App = () => {
       setTimeout(() => {
         handleNotification(null);
       }, 5000);
-    } finally {
-      setNewBlog({
-        title: "",
-        author: "",
-        url: "",
-      });
     }
   };
 
@@ -92,11 +80,7 @@ const App = () => {
       ) : (
         <div>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
-          <BlogForm
-            handleBlogSubmit={handleBlogSubmit}
-            newBlog={newBlog}
-            setNewBlog={setNewBlog}
-          />
+          <BlogForm addNewBlog={addNewBlog} />
         </div>
       )}
 

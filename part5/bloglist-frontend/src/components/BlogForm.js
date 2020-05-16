@@ -1,46 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 import "../Form.css";
 
-const BlogForm = ({
-  newBlog: { title, author, url },
-  handleBlogSubmit,
-  setNewBlog,
-}) => {
+const InputFeild = ({ name, blogFeild, setNewBlog }) => {
+  return (
+    <section>
+      {name}
+      <input
+        type="text"
+        value={blogFeild[name]}
+        name={name}
+        onChange={({ target }) =>
+          setNewBlog({ ...blogFeild, [name]: target.value })
+        }
+      />
+    </section>
+  );
+};
+
+const BlogForm = ({ addNewBlog }) => {
+  const [blogFeilds, setBlogFeilds] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
+
+  // const { title, author, url } = newBlog;
+
+  const handleBlogSubmit = (event) => {
+    event.preventDefault();
+    addNewBlog(blogFeilds);
+    setBlogFeilds({
+      title: "",
+      author: "",
+      url: "",
+    });
+  };
+
   return (
     <form onSubmit={handleBlogSubmit} className="blogForm">
-      <section>
-        Title
-        <input
-          type="text"
-          value={title}
-          name={"title"}
-          onChange={({ target }) =>
-            setNewBlog({ author, url, title: target.value })
-          }
-        />
-      </section>
-      <section>
-        author
-        <input
-          type="text"
-          value={author}
-          name={"author"}
-          onChange={({ target }) =>
-            setNewBlog({ title, url, author: target.value })
-          }
-        />
-      </section>
-      <section>
-        URL
-        <input
-          type="text"
-          value={url}
-          name={"url"}
-          onChange={({ target }) =>
-            setNewBlog({ title, author, url: target.value })
-          }
-        />
-      </section>
+      <InputFeild
+        name="title"
+        blogFeild={blogFeilds}
+        setNewBlog={setBlogFeilds}
+      />
+      <InputFeild
+        name="author"
+        blogFeild={blogFeilds}
+        setNewBlog={setBlogFeilds}
+      />
+      <InputFeild
+        name="url"
+        blogFeild={blogFeilds}
+        setNewBlog={setBlogFeilds}
+      />
       <button>Add</button>
     </form>
   );
