@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import "../Form.css";
 
-const Login = ({
-  credentials: { username, password },
-  handleLogin,
-  setCredentials,
-}) => {
+const Login = ({ loginUser }) => {
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: "",
+  });
+  const { username, password } = credentials;
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    loginUser(credentials);
+    setCredentials({ username: "", password: "" });
+  };
+
   return (
     <form className="loginForm" onSubmit={handleLogin}>
       <section>

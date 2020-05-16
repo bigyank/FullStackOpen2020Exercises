@@ -9,10 +9,6 @@ import loginService from "./services/login";
 const App = () => {
   const [notification, setNotification] = useState(null);
   const [user, setUser] = useState(null);
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
-  });
 
   const [newBlog, setNewBlog] = useState({
     title: "",
@@ -45,8 +41,7 @@ const App = () => {
     }, 5000);
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const loginUser = async (credentials) => {
     try {
       const user = await loginService.login(credentials);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
@@ -58,8 +53,6 @@ const App = () => {
       setTimeout(() => {
         handleNotification(null);
       }, 5000);
-    } finally {
-      setCredentials({ username: "", password: "" });
     }
   };
 
@@ -95,11 +88,7 @@ const App = () => {
       <Notification notification={notification} />
 
       {user == null ? (
-        <Login
-          credentials={credentials}
-          setCredentials={setCredentials}
-          handleLogin={handleLogin}
-        />
+        <Login loginUser={loginUser} />
       ) : (
         <div>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
