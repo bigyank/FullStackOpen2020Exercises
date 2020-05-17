@@ -3,9 +3,6 @@ import React, { useState, useImperativeHandle } from "react";
 const Togglable = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  console.log("====================================");
-  console.log(props);
-  console.log("====================================");
   /**
    * ! "visible" in displayWhenVisible refers to the item which is toggled
    * * eg: form, buttons etc

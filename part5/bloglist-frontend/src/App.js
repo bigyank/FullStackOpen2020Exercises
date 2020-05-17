@@ -6,6 +6,8 @@ import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import blogUtil from "./utils/arrayHelper";
+import arrayHelper from "./utils/arrayHelper";
 
 const App = () => {
   const [notification, setNotification] = useState(null);
@@ -17,7 +19,8 @@ const App = () => {
   useEffect(() => {
     const getBlog = async () => {
       const blogs = await blogService.getAll();
-      setBlogs(blogs);
+      const sortedBlogs = blogUtil.sortAsc(blogs);
+      setBlogs(sortedBlogs);
     };
     getBlog();
   }, []);
@@ -54,12 +57,12 @@ const App = () => {
   };
 
   const addNewBlog = async (newBlog) => {
+    blogFormRef.current.toggleVisible();
     try {
       const returnedBlog = await blogService.create(newBlog);
       const message = `${returnedBlog.title} by ${returnedBlog.author} successfully added`;
       handleNotification(message, "success");
       setBlogs([...blogs, returnedBlog]);
-      blogFormRef.current.toggleVisible();
     } catch (error) {
       const message = error.response.data.error;
       handleNotification(message);
@@ -90,6 +93,14 @@ const App = () => {
     );
   };
 
+  const handleLike = async (toUpdateBlog) => {
+    toUpdateBlog = { ...toUpdateBlog, likes: toUpdateBlog.likes + 1 };
+    const returnedBlog = await blogService.update(toUpdateBlog);
+    const newBlogs = blogs.filter((blog) => blog.id !== toUpdateBlog.id);
+    const sortedBlogs = arrayHelper.sortAsc([...newBlogs, returnedBlog]);
+    setBlogs(sortedBlogs);
+  };
+
   return (
     <div>
       <Notification notification={notification} />
@@ -105,7 +116,9 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <div key={blog.id}>
+          <Blog blog={blog} handleLike={handleLike} />
+        </div>
       ))}
     </div>
   );
