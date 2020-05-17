@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import "../Form.css";
 
-const InputFeild = ({ name, blogFeild, setNewBlog }) => {
+//
+const InputFeild = ({ name, blogFeilds, setBlogFeilds }) => {
   return (
     <section>
       {name}
       <input
         type="text"
-        value={blogFeild[name]}
+        value={blogFeilds[name]}
         name={name}
         onChange={({ target }) =>
-          setNewBlog({ ...blogFeild, [name]: target.value })
+          setBlogFeilds({ ...blogFeilds, [name]: target.value })
         }
       />
     </section>
@@ -24,8 +25,6 @@ const BlogForm = ({ addNewBlog }) => {
     url: "",
   });
 
-  // const { title, author, url } = newBlog;
-
   const handleBlogSubmit = (event) => {
     event.preventDefault();
     addNewBlog(blogFeilds);
@@ -38,21 +37,9 @@ const BlogForm = ({ addNewBlog }) => {
 
   return (
     <form onSubmit={handleBlogSubmit} className="blogForm">
-      <InputFeild
-        name="title"
-        blogFeild={blogFeilds}
-        setNewBlog={setBlogFeilds}
-      />
-      <InputFeild
-        name="author"
-        blogFeild={blogFeilds}
-        setNewBlog={setBlogFeilds}
-      />
-      <InputFeild
-        name="url"
-        blogFeild={blogFeilds}
-        setNewBlog={setBlogFeilds}
-      />
+      <InputFeild name="title" {...{ blogFeilds, setBlogFeilds }} />
+      <InputFeild name="author" {...{ blogFeilds, setBlogFeilds }} />
+      <InputFeild name="url" {...{ blogFeilds, setBlogFeilds }} />
       <button>Add</button>
     </form>
   );
