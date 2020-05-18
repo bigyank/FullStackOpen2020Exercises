@@ -72,6 +72,33 @@ const App = () => {
     }
   };
 
+  const removeBlog = async (toRemoveBlog) => {
+    if (user === null) {
+      handleNotification("Not Authorized");
+      return setTimeout(() => {
+        handleNotification(null);
+      }, 5000);
+    }
+
+    try {
+      const remMsg = `Remove ${toRemoveBlog.title} by ${toRemoveBlog.author}?`;
+      const userChoice = window.confirm(remMsg);
+      if (!userChoice) {
+        return null;
+      }
+      await blogService.remove(toRemoveBlog);
+      const newBlogs = blogs.filter((blog) => toRemoveBlog.id !== blog.id);
+      setBlogs(newBlogs);
+      handleNotification("blog removed sucessfully", "success");
+    } catch (error) {
+      const message = error.response.data.error;
+      handleNotification(message);
+      setTimeout(() => {
+        handleNotification(null);
+      }, 5000);
+    }
+  };
+
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
     setUser(null);
@@ -117,7 +144,7 @@ const App = () => {
       <h2>blogs</h2>
       {blogs.map((blog) => (
         <div key={blog.id}>
-          <Blog blog={blog} handleLike={handleLike} />
+          <Blog {...{ blog, handleLike, removeBlog }} />
         </div>
       ))}
     </div>

@@ -1,30 +1,32 @@
 import React, { useState } from "react";
 
-const BlogInfo = ({ blog, handleLike }) => {
+const BlogInfo = ({ blog, handleLike, removeBlog }) => {
   return (
     <div>
       <p>Url : {blog.url}</p>
       <p>
-        Likes: {blog.likes} <LikeBtn blog={blog} handleLike={handleLike} />
+        Likes: {blog.likes}{" "}
+        <Button name="like" blog={blog} handleEvent={handleLike} />
       </p>
       <p>Name: {blog.user.name}</p>
+      <Button name="remove" blog={blog} handleEvent={removeBlog} />
     </div>
   );
 };
 
-const LikeBtn = ({ blog, handleLike }) => {
+const Button = ({ name, blog, handleEvent }) => {
   return (
     <button
       onClick={() => {
-        handleLike(blog);
+        handleEvent(blog);
       }}
     >
-      Like
+      {name}
     </button>
   );
 };
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, removeBlog }) => {
   const [blogDisplay, setBlogDisplay] = useState(false);
 
   const toggleBtn = () => {
@@ -45,7 +47,7 @@ const Blog = ({ blog, handleLike }) => {
       {blogDisplay ? (
         <>
           <button onClick={toggleBtn}>Hide</button>
-          <BlogInfo blog={blog} handleLike={handleLike} />
+          <BlogInfo {...{ blog, handleLike, removeBlog }} />
         </>
       ) : (
         <button onClick={toggleBtn}>Show</button>

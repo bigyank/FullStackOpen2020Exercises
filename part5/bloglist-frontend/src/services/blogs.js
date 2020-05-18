@@ -20,6 +20,15 @@ const create = async (newObject) => {
   return response.data;
 };
 
+const remove = async (removeObject) => {
+  const id = removeObject.id;
+  const config = {
+    headers: { Authorization: token },
+  };
+  const response = await axios.delete(baseUrl.concat(`/${id}`), config);
+  return response.data;
+};
+
 const update = async (newObject) => {
   newObject = { ...newObject, user: newObject.user.id };
   const id = newObject.id;
@@ -27,4 +36,4 @@ const update = async (newObject) => {
   return response.data;
 };
 
-export default { getAll, setToken, create, update };
+export default { getAll, setToken, create, update, remove };
