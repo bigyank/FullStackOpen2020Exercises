@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "../Form.css";
+import React, { useState } from 'react';
+import '../Form.css';
 
 //
 const InputFeild = ({ name, blogFeilds, setBlogFeilds }) => {
@@ -7,7 +7,7 @@ const InputFeild = ({ name, blogFeilds, setBlogFeilds }) => {
     <section>
       {name}
       <input
-        type="text"
+        type='text'
         value={blogFeilds[name]}
         name={name}
         onChange={({ target }) =>
@@ -20,26 +20,26 @@ const InputFeild = ({ name, blogFeilds, setBlogFeilds }) => {
 
 const BlogForm = ({ addNewBlog }) => {
   const [blogFeilds, setBlogFeilds] = useState({
-    title: "",
-    author: "",
-    url: "",
+    title: '',
+    author: '',
+    url: '',
   });
 
   const handleBlogSubmit = (event) => {
     event.preventDefault();
     addNewBlog(blogFeilds);
     setBlogFeilds({
-      title: "",
-      author: "",
-      url: "",
+      title: '',
+      author: '',
+      url: '',
     });
   };
 
   return (
-    <form onSubmit={handleBlogSubmit} className="blogForm">
-      <InputFeild name="title" {...{ blogFeilds, setBlogFeilds }} />
-      <InputFeild name="author" {...{ blogFeilds, setBlogFeilds }} />
-      <InputFeild name="url" {...{ blogFeilds, setBlogFeilds }} />
+    <form onSubmit={handleBlogSubmit} className='blogForm'>
+      <InputFeild name='title' {...{ blogFeilds, setBlogFeilds }} />
+      <InputFeild name='author' {...{ blogFeilds, setBlogFeilds }} />
+      <InputFeild name='url' {...{ blogFeilds, setBlogFeilds }} />
       <button>Add</button>
     </form>
   );

@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const BlogInfo = ({ blog, handleLike, removeBlog }) => {
   return (
     <div>
       <p>Url : {blog.url}</p>
       <p>
-        Likes: {blog.likes}{" "}
-        <Button name="like" blog={blog} handleEvent={handleLike} />
+        Likes: {blog.likes}{' '}
+        <Button name='like' blog={blog} handleEvent={handleLike} />
       </p>
       <p>Name: {blog.user.name}</p>
-      <Button name="remove" blog={blog} handleEvent={removeBlog} />
+      <Button name='remove' blog={blog} handleEvent={removeBlog} />
     </div>
   );
 };
@@ -36,7 +36,7 @@ const Blog = ({ blog, handleLike, removeBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
   };

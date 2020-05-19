@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import "../Form.css";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import '../Form.css';
 
 const InputFeild = ({ name, type, credentials, setCredentials }) => {
   return (
@@ -19,31 +20,42 @@ const InputFeild = ({ name, type, credentials, setCredentials }) => {
 
 const LoginForm = ({ loginUser }) => {
   const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
+    username: '',
+    password: '',
   });
 
   const handleLogin = async (event) => {
     event.preventDefault();
     loginUser(credentials);
-    setCredentials({ username: "", password: "" });
+    setCredentials({ username: '', password: '' });
   };
 
   return (
-    <form className="loginForm" onSubmit={handleLogin}>
+    <form className='loginForm' onSubmit={handleLogin}>
       <InputFeild
-        name="username"
-        type="text"
+        name='username'
+        type='text'
         {...{ setCredentials, credentials }}
       />
       <InputFeild
-        name="password"
-        type="password"
+        name='password'
+        type='password'
         {...{ setCredentials, credentials }}
       />
       <button>Login</button>
     </form>
   );
+};
+
+LoginForm.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+};
+
+InputFeild.propTypes = {
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  credentials: PropTypes.object.isRequired,
+  setCredentials: PropTypes.func.isRequired,
 };
 
 export default LoginForm;

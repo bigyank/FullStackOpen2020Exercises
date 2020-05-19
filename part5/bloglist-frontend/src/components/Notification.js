@@ -1,5 +1,5 @@
-import React from "react";
-import "../Notification.css";
+import React from 'react';
+import '../Notification.css';
 
 const Notification = ({ notification }) => {
   if (notification == null) {

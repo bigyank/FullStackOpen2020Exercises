@@ -1,4 +1,5 @@
-import React, { useState, useImperativeHandle } from "react";
+import React, { useState, useImperativeHandle } from 'react';
+import PropTypes from 'prop-types';
 
 const Togglable = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -8,8 +9,8 @@ const Togglable = React.forwardRef((props, ref) => {
    * * eg: form, buttons etc
    */
 
-  const displayWhenVisible = { display: isVisible ? "" : "none" };
-  const hideWhenVisible = { display: isVisible ? "none" : "" };
+  const displayWhenVisible = { display: isVisible ? '' : 'none' };
+  const hideWhenVisible = { display: isVisible ? 'none' : '' };
 
   const toggleVisible = () => {
     setIsVisible(!isVisible);
@@ -33,5 +34,11 @@ const Togglable = React.forwardRef((props, ref) => {
     </div>
   );
 });
+
+Togglable.displayName = 'Togglable';
+
+Togglable.propTypes = {
+  btnName: PropTypes.string.isRequired,
+};
 
 export default Togglable;

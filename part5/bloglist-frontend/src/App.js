@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import Blog from "./components/Blog";
-import Togglable from "./components/Togglable";
-import LoginForm from "./components/LoginForm";
-import BlogForm from "./components/BlogForm";
-import Notification from "./components/Notification";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
-import blogUtil from "./utils/arrayHelper";
-import arrayHelper from "./utils/arrayHelper";
+import React, { useState, useEffect } from 'react';
+import Blog from './components/Blog';
+import Togglable from './components/Togglable';
+import LoginForm from './components/LoginForm';
+import BlogForm from './components/BlogForm';
+import Notification from './components/Notification';
+import blogService from './services/blogs';
+import loginService from './services/login';
+import blogUtil from './utils/arrayHelper';
+import arrayHelper from './utils/arrayHelper';
 
 const App = () => {
   const [notification, setNotification] = useState(null);
@@ -26,7 +26,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const loggedUserJson = window.localStorage.getItem("loggedUser");
+    const loggedUserJson = window.localStorage.getItem('loggedUser');
     if (loggedUserJson) {
       const user = JSON.parse(loggedUserJson);
       setUser(user);
@@ -34,7 +34,7 @@ const App = () => {
     }
   }, []);
 
-  const handleNotification = (message, type = "error") => {
+  const handleNotification = (message, type = 'error') => {
     setNotification({ message, type });
     setTimeout(() => {
       setNotification(null);
@@ -44,7 +44,7 @@ const App = () => {
   const loginUser = async (credentials) => {
     try {
       const user = await loginService.login(credentials);
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
+      window.localStorage.setItem('loggedUser', JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
     } catch (error) {
@@ -61,7 +61,7 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(newBlog);
       const message = `${returnedBlog.title} by ${returnedBlog.author} successfully added`;
-      handleNotification(message, "success");
+      handleNotification(message, 'success');
       setBlogs([...blogs, returnedBlog]);
     } catch (error) {
       const message = error.response.data.error;
@@ -74,7 +74,7 @@ const App = () => {
 
   const removeBlog = async (toRemoveBlog) => {
     if (user === null) {
-      handleNotification("Not Authorized");
+      handleNotification('Not Authorized');
       return setTimeout(() => {
         handleNotification(null);
       }, 5000);
@@ -89,7 +89,7 @@ const App = () => {
       await blogService.remove(toRemoveBlog);
       const newBlogs = blogs.filter((blog) => toRemoveBlog.id !== blog.id);
       setBlogs(newBlogs);
-      handleNotification("blog removed sucessfully", "success");
+      handleNotification('blog removed sucessfully', 'success');
     } catch (error) {
       const message = error.response.data.error;
       handleNotification(message);
@@ -100,13 +100,13 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedUser");
+    window.localStorage.removeItem('loggedUser');
     setUser(null);
   };
 
   const loginForm = () => {
     return (
-      <Togglable btnName="Login">
+      <Togglable btnName='Login'>
         <LoginForm loginUser={loginUser} />
       </Togglable>
     );
@@ -114,7 +114,7 @@ const App = () => {
 
   const blogForm = () => {
     return (
-      <Togglable btnName="Add Blog" ref={blogFormRef}>
+      <Togglable btnName='Add Blog' ref={blogFormRef}>
         <BlogForm addNewBlog={addNewBlog} />
       </Togglable>
     );
@@ -132,7 +132,7 @@ const App = () => {
     <div>
       <Notification notification={notification} />
 
-      {user == null ? (
+      {user === null ? (
         loginForm()
       ) : (
         <div>
