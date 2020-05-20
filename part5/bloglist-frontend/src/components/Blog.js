@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const BlogInfo = ({ blog, handleLike, removeBlog }) => {
   return (
-    <div>
+    <div className='detailInfo'>
       <p>Url : {blog.url}</p>
       <p>
         Likes: {blog.likes}{' '}
@@ -42,8 +42,10 @@ const Blog = ({ blog, handleLike, removeBlog }) => {
   };
 
   return (
-    <div style={blogStyle}>
-      {blog.title} {blog.author}
+    <li style={blogStyle}>
+      <div className='minInfo'>
+        {blog.title} {blog.author}
+      </div>
       {blogDisplay ? (
         <>
           <button onClick={toggleBtn}>Hide</button>
@@ -52,7 +54,7 @@ const Blog = ({ blog, handleLike, removeBlog }) => {
       ) : (
         <button onClick={toggleBtn}>Show</button>
       )}
-    </div>
+    </li>
   );
 };
 

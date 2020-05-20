@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import '../Form.css';
 
 //
-const InputFeild = ({ name, blogFeilds, setBlogFeilds }) => {
+const InputFeild = ({ name, id, blogFeilds, setBlogFeilds }) => {
   return (
     <section>
       {name}
       <input
+        id={id}
         type='text'
         value={blogFeilds[name]}
         name={name}
@@ -37,9 +38,13 @@ const BlogForm = ({ addNewBlog }) => {
 
   return (
     <form onSubmit={handleBlogSubmit} className='blogForm'>
-      <InputFeild name='title' {...{ blogFeilds, setBlogFeilds }} />
-      <InputFeild name='author' {...{ blogFeilds, setBlogFeilds }} />
-      <InputFeild name='url' {...{ blogFeilds, setBlogFeilds }} />
+      <InputFeild id='title' name='title' {...{ blogFeilds, setBlogFeilds }} />
+      <InputFeild
+        id='author'
+        name='author'
+        {...{ blogFeilds, setBlogFeilds }}
+      />
+      <InputFeild id='url' name='url' {...{ blogFeilds, setBlogFeilds }} />
       <button>Add</button>
     </form>
   );
