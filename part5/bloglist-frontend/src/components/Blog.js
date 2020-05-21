@@ -42,7 +42,7 @@ const Blog = ({ blog, handleLike, removeBlog }) => {
   };
 
   return (
-    <li style={blogStyle}>
+    <li style={blogStyle} className='allBlogsInfo'>
       <div className='minInfo'>
         {blog.title} {blog.author}
       </div>

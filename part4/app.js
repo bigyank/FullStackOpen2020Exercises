@@ -28,6 +28,13 @@ app.use(getToken);
 app.use('/api/login', loginRouter);
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', userRouter);
+
+if (process.env.NODE_ENV === 'test') {
+  // eslint-disable-next-line global-require
+  const testRouter = require('./controllers/test');
+  app.use('/api/test', testRouter);
+}
+
 app.use(unknownEndpoint);
 app.use(errorHandler);
 

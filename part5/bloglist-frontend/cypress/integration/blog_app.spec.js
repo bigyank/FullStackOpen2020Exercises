@@ -52,18 +52,35 @@ describe('Before Login', function () {
 
     describe('when a blog exists', function () {
       this.beforeEach(function () {
-        cy.AddBlog({ title: 'title2', author: 'author2', url: 'url2' });
-        cy.contains('Show').click();
+        cy.AddBlog({
+          title: 'title2',
+          author: 'author2',
+          url: 'url2',
+          likes: 2,
+        });
+        cy.AddBlog({
+          title: 'title3',
+          author: 'author3',
+          url: 'url3',
+          likes: 4,
+        });
+        cy.AddBlog({
+          title: 'title4',
+          author: 'author4',
+          url: 'url4',
+          likes: 5,
+        });
       });
 
       it('blog can be liked', function () {
+        cy.contains('Show').click();
         cy.get('.detailInfo').as('blogInfo');
         cy.get('@blogInfo').contains('0');
         cy.get('@blogInfo').contains('like').click();
         cy.get('@blogInfo').contains('1');
       });
 
-      it.only('can be deleted', function () {
+      it('can be deleted', function () {
         cy.contains('remove').click();
         cy.get('.success')
           .should('contain', 'blog removed sucessfully')
