@@ -45,7 +45,7 @@ const BlogForm = ({ addNewBlog }) => {
         {...{ blogFeilds, setBlogFeilds }}
       />
       <InputFeild id='url' name='url' {...{ blogFeilds, setBlogFeilds }} />
-      <button>Add</button>
+      <button id='addBlog-btn'>Add</button>
     </form>
   );
 };

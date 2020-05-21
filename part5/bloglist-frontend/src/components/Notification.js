@@ -2,7 +2,7 @@ import React from 'react';
 import '../Notification.css';
 
 const Notification = ({ notification }) => {
-  if (notification == null) {
+  if (notification === null) {
     return null;
   }
   return (

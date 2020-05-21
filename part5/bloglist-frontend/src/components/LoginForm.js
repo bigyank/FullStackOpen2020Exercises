@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import '../Form.css';
 
-const InputFeild = ({ name, type, credentials, setCredentials }) => {
+const InputFeild = ({ name, id, type, credentials, setCredentials }) => {
   return (
     <section>
       {name}
       <input
+        id={id}
         value={credentials[name]}
         name={name}
         type={type}
@@ -33,16 +34,18 @@ const LoginForm = ({ loginUser }) => {
   return (
     <form className='loginForm' onSubmit={handleLogin}>
       <InputFeild
+        id='username'
         name='username'
         type='text'
         {...{ setCredentials, credentials }}
       />
       <InputFeild
+        id='password'
         name='password'
         type='password'
         {...{ setCredentials, credentials }}
       />
-      <button>Login</button>
+      <button id='login-btn'>Login</button>
     </form>
   );
 };
