@@ -1,10 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { addAnecdote } from '../reducers/anecdotesReducer';
-import {
-  setNotification,
-  removeNotification,
-} from '../reducers/notificationReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
 const Form = () => {
   const style = {
@@ -13,17 +10,14 @@ const Form = () => {
 
   const dispatch = useDispatch();
 
-  const handleForm = (event) => {
+  const handleForm = async (event) => {
     event.preventDefault();
 
     const content = event.target.anecdote.value;
     event.target.anecdote.value = '';
 
     dispatch(addAnecdote(content));
-    dispatch(setNotification(`${content} added to the list`));
-    setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
+    dispatch(setNotification(`${content} added to the list`), 5);
   };
 
   return (
