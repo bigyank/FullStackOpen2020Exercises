@@ -1,12 +1,12 @@
 export const setNotification = (message, timer) => {
   return (dispatch) => {
-    setTimeout(() => {
+    const timerId = setTimeout(() => {
       dispatch(removeNotification());
     }, timer * 1000);
 
     dispatch({
       type: 'NEW_NOTIFICATION',
-      message,
+      data: { message, id: timerId },
     });
   };
 };
@@ -17,12 +17,16 @@ const removeNotification = () => {
   };
 };
 
-const notificationReducer = (state = 'Welcome', action) => {
+const notificationReducer = (
+  state = { message: 'Welcome', id: null },
+  action
+) => {
   switch (action.type) {
     case 'NEW_NOTIFICATION':
-      return action.message;
+      clearTimeout(state.id);
+      return action.data;
     case 'CLEAR_NOTIFICATION':
-      return null;
+      return { message: null };
     default:
       return state;
   }
