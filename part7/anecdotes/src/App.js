@@ -7,6 +7,7 @@ import {
   Redirect,
   useHistory,
 } from 'react-router-dom';
+import { useFeild } from './hooks/index';
 
 const Menu = () => {
   const padding = {
@@ -15,13 +16,13 @@ const Menu = () => {
 
   return (
     <div>
-      <Link to='/' style={padding}>
+      <Link to="/" style={padding}>
         anecdotes
       </Link>
-      <Link to='/create' style={padding}>
+      <Link to="/create" style={padding}>
         create new
       </Link>
-      <Link to='/about' style={padding}>
+      <Link to="/about" style={padding}>
         about
       </Link>
     </div>
@@ -80,11 +81,11 @@ const About = () => (
 const Footer = () => (
   <div>
     Anecdote app for{' '}
-    <a href='https://courses.helsinki.fi/fi/tkt21009'>
+    <a href="https://courses.helsinki.fi/fi/tkt21009">
       Full Stack -websovelluskehitys
     </a>
     . See{' '}
-    <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>
+    <a href="https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js">
       https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js
     </a>{' '}
     for the source code.
@@ -92,25 +93,33 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('');
-  const [author, setAuthor] = useState('');
-  const [info, setInfo] = useState('');
+  const { clear: contentClear, ...content } = useFeild('text');
+  const { clear: authorClear, ...author } = useFeild('text');
+  const { clear: infoClear, ...info } = useFeild('text');
 
   const history = useHistory();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
+
     history.push('/');
-    props.setNotification(`a new anecdote ${content} created`);
+
+    props.setNotification(`a new anecdote ${content.value} created`);
     setTimeout(() => {
       props.setNotification('');
     }, 5000);
+  };
+
+  const handleClear = () => {
+    contentClear();
+    authorClear();
+    infoClear();
   };
 
   return (
@@ -119,29 +128,20 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name='content'
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input {...content} />
         </div>
         <div>
           author
-          <input
-            name='author'
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input
-            name='info'
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="button" onClick={handleClear}>
+          clear
+        </button>
       </form>
     </div>
   );
@@ -199,16 +199,16 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Menu />
       <Switch>
-        <Route path='/create'>
+        <Route path="/create">
           <CreateNew addNew={addNew} setNotification={setNotification} />
         </Route>
-        <Route path='/about'>
+        <Route path="/about">
           <About />
         </Route>
-        <Route path='/anecdotes/:id'>
-          {ane ? <SingleAnecdote ane={ane} /> : <Redirect to='/'></Redirect>}
+        <Route path="/anecdotes/:id">
+          {ane ? <SingleAnecdote ane={ane} /> : <Redirect to="/"></Redirect>}
         </Route>
-        <Route path='/'>
+        <Route path="/">
           <Notification notification={notification} />
           <AnecdoteList anecdotes={anecdotes} />
         </Route>
