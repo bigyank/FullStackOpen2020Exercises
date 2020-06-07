@@ -1,53 +1,55 @@
-import React, { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+
+import { useFeild } from '../hooks/Hooks';
+import { addBlog } from '../reducers/blogReducer';
 import '../Form.css';
 
 //
-const InputFeild = ({ name, id, blogFeilds, setBlogFeilds }) => {
+const InputFeild = ({ name, type, onChange, value }) => {
   return (
     <section>
       {name}
-      <input
-        id={id}
-        type='text'
-        value={blogFeilds[name]}
-        name={name}
-        onChange={({ target }) =>
-          setBlogFeilds({ ...blogFeilds, [name]: target.value })
-        }
-      />
+      <input type={type} value={value} onChange={onChange} />
     </section>
   );
 };
 
-const BlogForm = ({ addNewBlog }) => {
-  const [blogFeilds, setBlogFeilds] = useState({
-    title: '',
-    author: '',
-    url: '',
-  });
+const BlogForm = () => {
+  const dispatch = useDispatch();
 
-  const handleBlogSubmit = (event) => {
+  const [title, titleService] = useFeild('text');
+  const [author, authorService] = useFeild('text');
+  const [url, urlService] = useFeild('text');
+
+  const submitBlog = (event) => {
     event.preventDefault();
-    addNewBlog(blogFeilds);
-    setBlogFeilds({
-      title: '',
-      author: '',
-      url: '',
-    });
+
+    dispatch(addBlog({ title, author, url }));
+
+    titleService.reset();
+    authorService.reset();
+    urlService.reset();
   };
 
   return (
-    <form onSubmit={handleBlogSubmit} className='blogForm'>
-      <InputFeild id='title' name='title' {...{ blogFeilds, setBlogFeilds }} />
-      <InputFeild
-        id='author'
-        name='author'
-        {...{ blogFeilds, setBlogFeilds }}
-      />
-      <InputFeild id='url' name='url' {...{ blogFeilds, setBlogFeilds }} />
-      <button id='addBlog-btn'>Add</button>
+    <form onSubmit={submitBlog}>
+      <InputFeild name="title" value={title} {...titleService} />
+      <InputFeild name="author" value={author} {...authorService} />
+      <InputFeild name="url" value={url} {...urlService} />
+      <button id="addBlog-btn" type="submit">
+        Add
+      </button>
     </form>
   );
+};
+
+InputFeild.propTypes = {
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default BlogForm;

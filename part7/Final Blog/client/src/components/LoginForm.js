@@ -1,64 +1,53 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+
+import { loginUser } from '../reducers/userReducer';
+import { useFeild } from '../hooks/Hooks';
 import '../Form.css';
 
-const InputFeild = ({ name, id, type, credentials, setCredentials }) => {
+const InputFeild = ({ value, type, onChange }) => {
   return (
     <section>
-      {name}
-      <input
-        id={id}
-        value={credentials[name]}
-        name={name}
-        type={type}
-        onChange={({ target }) =>
-          setCredentials({ ...credentials, [name]: target.value })
-        }
-      />
+      Username: <input value={value} type={type} onChange={onChange} />
     </section>
   );
 };
 
-const LoginForm = ({ loginUser }) => {
-  const [credentials, setCredentials] = useState({
-    username: '',
-    password: '',
-  });
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  const [username, usernameService] = useFeild('text');
+  const [password, passwordService] = useFeild('password');
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    loginUser(credentials);
-    setCredentials({ username: '', password: '' });
+
+    dispatch(
+      loginUser({
+        username,
+        password,
+      })
+    );
+
+    usernameService.reset();
+    passwordService.reset();
   };
 
   return (
-    <form className='loginForm' onSubmit={handleLogin}>
-      <InputFeild
-        id='username'
-        name='username'
-        type='text'
-        {...{ setCredentials, credentials }}
-      />
-      <InputFeild
-        id='password'
-        name='password'
-        type='password'
-        {...{ setCredentials, credentials }}
-      />
-      <button id='login-btn'>Login</button>
+    <form className="loginForm" onSubmit={handleLogin}>
+      <InputFeild value={username} {...usernameService} />
+      <InputFeild value={password} {...passwordService} />
+      <button type="submit" id="login-btn">
+        Login
+      </button>
     </form>
   );
 };
 
-LoginForm.propTypes = {
-  loginUser: PropTypes.func.isRequired,
-};
-
 InputFeild.propTypes = {
-  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  credentials: PropTypes.object.isRequired,
-  setCredentials: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
