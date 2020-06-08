@@ -28,6 +28,7 @@ export const loginUser = (credentials) => {
 
 export const logoutUser = () => {
   return async (dispatch) => {
+    blogService.unsetToken();
     dispatch({
       type: 'LOGOUT',
     });

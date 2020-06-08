@@ -4,9 +4,8 @@ import { useDispatch } from 'react-redux';
 
 import { useFeild } from '../hooks/Hooks';
 import { addBlog } from '../reducers/blogReducer';
-import '../Form.css';
+import { addNotification } from '../reducers/notificationReducer';
 
-//
 const InputFeild = ({ name, type, onChange, value }) => {
   return (
     <section>
@@ -23,14 +22,19 @@ const BlogForm = () => {
   const [author, authorService] = useFeild('text');
   const [url, urlService] = useFeild('text');
 
-  const submitBlog = (event) => {
+  const submitBlog = async (event) => {
     event.preventDefault();
 
-    dispatch(addBlog({ title, author, url }));
-
-    titleService.reset();
-    authorService.reset();
-    urlService.reset();
+    try {
+      await dispatch(addBlog({ title, author, url }));
+    } catch (error) {
+      const message = error.response.data.error;
+      dispatch(addNotification(message, 5));
+    } finally {
+      titleService.reset();
+      authorService.reset();
+      urlService.reset();
+    }
   };
 
   return (

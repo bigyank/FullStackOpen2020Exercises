@@ -1,13 +1,15 @@
 import React from 'react';
-import '../Notification.css';
+import { useSelector } from 'react-redux';
 
-const Notification = ({ notification }) => {
+const Notification = () => {
+  const notification = useSelector((state) => state.notification);
+
   if (notification === null) {
     return null;
   }
   return (
-    <div className={notification.type}>
-      <p>{notification.message}</p>
+    <div>
+      <p>{notification}</p>
     </div>
   );
 };

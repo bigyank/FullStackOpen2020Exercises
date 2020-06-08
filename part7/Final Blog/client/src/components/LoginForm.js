@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 
 import { loginUser } from '../reducers/userReducer';
+import { addNotification } from '../reducers/notificationReducer';
 import { useFeild } from '../hooks/Hooks';
-import '../Form.css';
 
 const InputFeild = ({ value, type, onChange }) => {
   return (
@@ -22,19 +22,24 @@ const LoginForm = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    dispatch(
-      loginUser({
-        username,
-        password,
-      })
-    );
-
     usernameService.reset();
     passwordService.reset();
+
+    try {
+      await dispatch(
+        loginUser({
+          username,
+          password,
+        })
+      );
+    } catch (error) {
+      const message = error.response.data.error;
+      dispatch(addNotification(message, 5));
+    }
   };
 
   return (
-    <form className="loginForm" onSubmit={handleLogin}>
+    <form onSubmit={handleLogin}>
       <InputFeild value={username} {...usernameService} />
       <InputFeild value={password} {...passwordService} />
       <button type="submit" id="login-btn">

@@ -44,6 +44,9 @@ blogRouter.post('/', async (req, res) => {
 });
 
 blogRouter.put('/:id', async (req, res) => {
+  const { token } = req;
+  jwt.verify(token, SECRET);
+
   const { id } = req.params;
   const { body } = req;
   const updatedBlog = await Blog.findByIdAndUpdate(id, body, {

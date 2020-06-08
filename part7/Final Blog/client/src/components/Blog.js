@@ -1,7 +1,9 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { removeBlog, likeBlog } from '../reducers/blogReducer';
+import { addNotification } from '../reducers/notificationReducer';
 import { useToggle } from '../hooks/Hooks';
 
 const Button = ({ name, onClick }) => {
@@ -12,15 +14,44 @@ const Button = ({ name, onClick }) => {
   );
 };
 
-const BlogDetail = ({ url, likes, user }) => {
+const BlogDetail = ({ blog }) => {
+  const dispatch = useDispatch();
+
+  const handleRemove = async () => {
+    const remMsg = `Remove ${blog.title} by ${blog.author}?`;
+
+    const userChoice = window.confirm(remMsg);
+    if (!userChoice) {
+      return null;
+    }
+
+    try {
+      await dispatch(removeBlog(blog));
+      dispatch(addNotification('blog removed sucessfully', 5));
+    } catch (error) {
+      const message = error.response.data.error;
+      dispatch(addNotification(message, 5));
+    }
+  };
+
+  const handleLike = async () => {
+    const toUpdateBlog = { ...blog, likes: blog.likes + 1 };
+    try {
+      await dispatch(likeBlog(toUpdateBlog));
+    } catch (error) {
+      const message = error.response.data.error;
+      dispatch(addNotification(message, 5));
+    }
+  };
+
   return (
     <div>
-      <p>Url : {url}</p>
+      <p>Url : {blog.url}</p>
       <p>
-        Likes: {likes} <Button name="like" />
+        Likes: {blog.likes} <Button name="like" onClick={handleLike} />
       </p>
-      <p>Name: {user.name}</p>
-      <Button name="remove" />
+      <p>Name: {blog.user.name}</p>
+      <Button name="remove" onClick={handleRemove} />
     </div>
   );
 };
@@ -44,7 +75,7 @@ const SingleBlog = ({ blog }) => {
       ) : (
         <>
           <Button name="hide" onClick={toggle.setValue} />
-          <BlogDetail {...blog} />
+          <BlogDetail blog={blog} />
         </>
       )}
     </div>
@@ -67,9 +98,7 @@ SingleBlog.propTypes = {
 };
 
 BlogDetail.propTypes = {
-  url: PropTypes.string.isRequired,
-  likes: PropTypes.number.isRequired,
-  user: PropTypes.object.isRequired,
+  blog: PropTypes.object.isRequired,
 };
 
 export default Blog;
