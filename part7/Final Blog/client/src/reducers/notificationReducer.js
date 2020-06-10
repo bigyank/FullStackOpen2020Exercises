@@ -20,11 +20,11 @@ export const removeNotification = () => {
   };
 };
 
-export const addNotification = (message, time) => {
+export const addNotification = (message, time, type = 'success') => {
   return (dispatch) => {
     dispatch({
       type: 'NOTIFY',
-      data: message,
+      data: { message, type },
     });
 
     timerId = setTimeout(() => {

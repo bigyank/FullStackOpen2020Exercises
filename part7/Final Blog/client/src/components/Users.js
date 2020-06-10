@@ -1,28 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
+
+import {
+  Typography,
+  TableContainer,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableHead,
+  List,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
+
 import userService from '../services/users';
 
 const AllUsers = ({ users }) => {
   const { url } = useRouteMatch();
   return (
     <div>
-      <h2>Users</h2>
-      {users.map((user) => (
-        <table key={user.id}>
-          <tbody>
-            <tr>
-              <th>Name</th>
-              <th>Blogs Created</th>
-            </tr>
-            <tr>
-              <td>
-                <Link to={`${url}/${user.id}`}>{user.name}</Link>
-              </td>
-              <td>{user.blogs.length}</td>
-            </tr>
-          </tbody>
-        </table>
-      ))}
+      <Typography variant="h4">Users</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Users</TableCell>
+              <TableCell>Blogs</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>
+                  <Link to={`${url}/${user.id}`}>{user.name}</Link>
+                </TableCell>
+                <TableCell>{user.blogs.length}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
@@ -33,12 +52,14 @@ const SingleUser = ({ name, blogs }) => {
   }
   return (
     <div>
-      <h2>{name}</h2>
-      {blogs.map((blog) => (
-        <ul key={blog.id}>
-          <li>{blog.title}</li>
-        </ul>
-      ))}
+      <Typography variant="h6">{name}</Typography>
+      <List>
+        {blogs.map((blog) => (
+          <ListItem key={blog.id}>
+            <ListItemText primary={blog.title} />
+          </ListItem>
+        ))}
+      </List>
     </div>
   );
 };

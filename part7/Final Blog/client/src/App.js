@@ -22,21 +22,11 @@ const App = () => {
   }, []);
 
   const user = useSelector((state) => state.user);
-  // const handleNotification = (message, type = 'error') => {
-  //   setNotification({ message, type });
-  //   setTimeout(() => {
-  //     setNotification(null);
-  //   }, 5000);
-  // };
-
-  // const handleLogout = () => {
-  //   window.localStorage.removeItem('loggedUser');
-  //   setUser(null);
-  // };
 
   return (
     <div>
       <NavBar />
+      <Notification />
       <Switch>
         <Route path="/users">
           {user ? <Users /> : <Redirect to="/login" />}

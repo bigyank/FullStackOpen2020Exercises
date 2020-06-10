@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { TextField, Button } from '@material-ui/core';
+
 import { loginUser } from '../reducers/userReducer';
 import { addNotification } from '../reducers/notificationReducer';
 import { useFeild } from '../hooks/Hooks';
 
-const InputFeild = ({ value, type, onChange }) => {
+const InputFeild = ({ value, type, onChange, label }) => {
   return (
     <section>
-      Username: <input value={value} type={type} onChange={onChange} />
+      <TextField label={label} value={value} type={type} onChange={onChange} />
     </section>
   );
 };
@@ -37,17 +39,17 @@ const LoginForm = () => {
       history.push('/');
     } catch (error) {
       const message = error.response.data.error;
-      dispatch(addNotification(message, 5));
+      dispatch(addNotification(message, 5, 'error'));
     }
   };
 
   return (
     <form onSubmit={handleLogin}>
-      <InputFeild value={username} {...usernameService} />
-      <InputFeild value={password} {...passwordService} />
-      <button type="submit" id="login-btn">
+      <InputFeild value={username} {...usernameService} label="Username" />
+      <InputFeild value={password} {...passwordService} label="password" />
+      <Button variant="outlined" color="primary" type="submit">
         Login
-      </button>
+      </Button>
     </form>
   );
 };

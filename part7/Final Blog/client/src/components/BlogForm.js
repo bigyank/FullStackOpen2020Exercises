@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { TextField, Button } from '@material-ui/core';
+
 import { useFeild } from '../hooks/Hooks';
 import { addBlog } from '../reducers/blogReducer';
 import { addNotification } from '../reducers/notificationReducer';
 
-const InputFeild = ({ name, type, onChange, value }) => {
+const InputFeild = ({ label, onChange, value }) => {
   return (
     <section>
-      {name}
-      <input type={type} value={value} onChange={onChange} />
+      <TextField label={label} value={value} onChange={onChange} />
     </section>
   );
 };
@@ -33,26 +34,26 @@ const BlogForm = () => {
       authorService.reset();
       urlService.reset();
       history.push('/');
+      dispatch(addNotification('Blog Added', 5));
     } catch (error) {
       const message = error.response.data.error;
-      dispatch(addNotification(message, 5));
+      dispatch(addNotification(message, 5, 'error'));
     }
   };
 
   return (
     <form onSubmit={submitBlog}>
-      <InputFeild name="title" value={title} {...titleService} />
-      <InputFeild name="author" value={author} {...authorService} />
-      <InputFeild name="url" value={url} {...urlService} />
-      <button id="addBlog-btn" type="submit">
-        Add
-      </button>
+      <InputFeild label="Title" value={title} {...titleService} />
+      <InputFeild label="Author" value={author} {...authorService} />
+      <InputFeild label="URL" value={url} {...urlService} />
+      <Button type="submit" variant="outlined" color="primary">
+        Submit
+      </Button>
     </form>
   );
 };
 
 InputFeild.propTypes = {
-  name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,

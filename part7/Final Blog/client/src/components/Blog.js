@@ -2,24 +2,45 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useRouteMatch, Switch, Route } from 'react-router-dom';
 
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Typography,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+
 import BlogDetail from './BlogDetail';
 
-const AllBlogs = ({ blogs }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  };
+const useStyles = makeStyles({
+  blogCard: {
+    marginTop: 10,
+  },
+});
 
+const AllBlogs = ({ blogs }) => {
+  const classes = useStyles();
   return (
     <div>
-      <h2>blogs</h2>
       {blogs.map((blog) => (
-        <div style={blogStyle} key={blog.id}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </div>
+        <Card className={classes.blogCard} key={blog.id}>
+          <CardContent>
+            <Typography gutterBottom variant="h6">
+              {blog.title}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button
+              size="small"
+              color="primary"
+              component={Link}
+              to={`/blogs/${blog.id}`}
+            >
+              Learn More
+            </Button>
+          </CardActions>
+        </Card>
       ))}
     </div>
   );

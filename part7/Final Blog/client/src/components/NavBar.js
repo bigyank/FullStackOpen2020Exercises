@@ -2,7 +2,16 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 
+import { Button, AppBar, Toolbar, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+
 import { logoutUser } from '../reducers/userReducer';
+
+const useStyles = makeStyles({
+  userNameNav: {
+    flex: 1,
+  },
+});
 
 const LoginBtn = () => {
   const history = useHistory();
@@ -12,9 +21,9 @@ const LoginBtn = () => {
   };
 
   return (
-    <button type="button" onClick={handleLogin}>
+    <Button onClick={handleLogin} color="inherit">
       Login
-    </button>
+    </Button>
   );
 };
 
@@ -29,21 +38,38 @@ const LogoutBtn = () => {
   };
 
   return (
-    <button type="button" onClick={handleLogout}>
+    <Button onClick={handleLogout} color="inherit">
       Logout
-    </button>
+    </Button>
   );
 };
 
 const NavBar = () => {
   const user = useSelector((state) => state.user);
+  const classes = useStyles();
+
   return (
-    <div>
-      <Link to="/">Blog</Link>
-      {user && <Link to="/create">Create</Link>}
-      {user && <Link to="/users">Users</Link>}
-      {user ? <LogoutBtn /> : <LoginBtn />}
-    </div>
+    <AppBar position="static">
+      <Toolbar>
+        {user ? (
+          <Typography className={classes.userNameNav}>{user.name}</Typography>
+        ) : null}
+        <Button color="inherit" component={Link} to="/">
+          Blog
+        </Button>
+        {user && (
+          <Button color="inherit" component={Link} to="/create">
+            Create
+          </Button>
+        )}
+        {user && (
+          <Button color="inherit" component={Link} to="/users">
+            Users
+          </Button>
+        )}
+        {user ? <LogoutBtn /> : <LoginBtn />}
+      </Toolbar>
+    </AppBar>
   );
 };
 
