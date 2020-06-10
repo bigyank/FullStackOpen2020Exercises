@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { useFeild } from '../hooks/Hooks';
 import { addBlog } from '../reducers/blogReducer';
@@ -17,6 +18,7 @@ const InputFeild = ({ name, type, onChange, value }) => {
 
 const BlogForm = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [title, titleService] = useFeild('text');
   const [author, authorService] = useFeild('text');
@@ -27,13 +29,13 @@ const BlogForm = () => {
 
     try {
       await dispatch(addBlog({ title, author, url }));
-    } catch (error) {
-      const message = error.response.data.error;
-      dispatch(addNotification(message, 5));
-    } finally {
       titleService.reset();
       authorService.reset();
       urlService.reset();
+      history.push('/');
+    } catch (error) {
+      const message = error.response.data.error;
+      dispatch(addNotification(message, 5));
     }
   };
 

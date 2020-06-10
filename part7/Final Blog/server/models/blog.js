@@ -18,6 +18,13 @@ const blogSchema = new Schema({
   author: {
     type: String,
   },
+  comments: [
+    {
+      content: {
+        type: String,
+      },
+    },
+  ],
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -26,7 +33,18 @@ const blogSchema = new Schema({
 
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
+    console.log(returnedObject);
+
     returnedObject.id = returnedObject._id.toString();
+
+    // this does'nt make any sense, too bad
+    if (returnedObject.comments) {
+      returnedObject.comments = returnedObject.comments.map((comment) => {
+        comment.id = comment._id.toString();
+        delete comment._id;
+        return comment;
+      });
+    }
     delete returnedObject._id;
     delete returnedObject.__v;
   },

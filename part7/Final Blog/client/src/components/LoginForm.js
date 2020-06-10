@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { loginUser } from '../reducers/userReducer';
 import { addNotification } from '../reducers/notificationReducer';
@@ -15,6 +16,7 @@ const InputFeild = ({ value, type, onChange }) => {
 };
 
 const LoginForm = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const [username, usernameService] = useFeild('text');
   const [password, passwordService] = useFeild('password');
@@ -32,6 +34,7 @@ const LoginForm = () => {
           password,
         })
       );
+      history.push('/');
     } catch (error) {
       const message = error.response.data.error;
       dispatch(addNotification(message, 5));

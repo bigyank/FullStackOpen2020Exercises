@@ -45,4 +45,28 @@ const update = async (userObject) => {
   return response.data;
 };
 
-export default { getAll, setToken, unsetToken, create, update, remove };
+const comment = async (blogObject) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const { id } = blogObject;
+  const newObject = { content: blogObject.content };
+
+  const response = await axios.post(
+    baseUrl.concat(`/${id}/comments`),
+    newObject,
+    config
+  );
+  return response.data;
+};
+
+export default {
+  getAll,
+  setToken,
+  unsetToken,
+  create,
+  update,
+  remove,
+  comment,
+};

@@ -55,6 +55,31 @@ blogRouter.put('/:id', async (req, res) => {
   res.status(200).send(updatedBlog);
 });
 
+blogRouter.post('/:id/comments', async (req, res) => {
+  const { id } = req.params;
+
+  const { content } = req.body;
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return res.send({ message: 'not found' });
+  }
+
+  blog.comments = blog.comments.concat({ content });
+  const { token } = req;
+  jwt.verify(token, SECRET);
+
+  const savedBlog = await blog.save();
+  const populatedBlog = await savedBlog
+    .populate('user', {
+      username: 1,
+      name: 1,
+    })
+    .execPopulate();
+
+  res.status(201).send(populatedBlog);
+});
+
 blogRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const { token } = req;

@@ -36,7 +36,7 @@ export const logoutUser = () => {
 };
 
 export const setUser = () => {
-  return async (dispatch) => {
+  return (dispatch) => {
     const loggedUserJson = window.localStorage.getItem('loggedUser');
     if (loggedUserJson) {
       const user = JSON.parse(loggedUserJson);
