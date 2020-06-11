@@ -21,7 +21,7 @@ import { useFeild } from '../hooks/Hooks';
 
 const useStyles = makeStyles({
   blogInfo: {
-    marginTop: 20,
+    marginTop: 10,
   },
   blogBody: {
     marginLeft: 20,
@@ -32,7 +32,6 @@ const useStyles = makeStyles({
     marginBottom: 20,
   },
   commentFeild: {
-    marginBottom: 20,
     marginTop: 10,
   },
 });
@@ -127,8 +126,6 @@ const BlogDetail = ({ blog }) => {
 
         <CommentForm blog={blog} />
 
-        <Dialouge deleteBlog={handleRemove} />
-
         <Button
           className={classes.buttonStyle}
           variant="contained"
@@ -139,6 +136,7 @@ const BlogDetail = ({ blog }) => {
           Like
         </Button>
 
+        <Dialouge deleteBlog={handleRemove} />
         <Typography variant="h5" color="secondary">
           Comments
         </Typography>

@@ -21,7 +21,6 @@ const AllUsers = ({ users }) => {
   const { url } = useRouteMatch();
   return (
     <div>
-      <Typography variant="h4">Users</Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

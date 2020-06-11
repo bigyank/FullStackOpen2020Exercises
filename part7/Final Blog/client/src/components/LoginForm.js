@@ -4,10 +4,17 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { TextField, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 import { loginUser } from '../reducers/userReducer';
 import { addNotification } from '../reducers/notificationReducer';
 import { useFeild } from '../hooks/Hooks';
+
+const useStyles = makeStyles({
+  btnStyle: {
+    marginTop: 10,
+  },
+});
 
 const InputFeild = ({ value, type, onChange, label }) => {
   return (
@@ -20,6 +27,7 @@ const InputFeild = ({ value, type, onChange, label }) => {
 const LoginForm = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const classes = useStyles();
   const [username, usernameService] = useFeild('text');
   const [password, passwordService] = useFeild('password');
 
@@ -47,7 +55,12 @@ const LoginForm = () => {
     <form onSubmit={handleLogin}>
       <InputFeild value={username} {...usernameService} label="Username" />
       <InputFeild value={password} {...passwordService} label="password" />
-      <Button variant="outlined" color="primary" type="submit">
+      <Button
+        className={classes.btnStyle}
+        variant="outlined"
+        color="primary"
+        type="submit"
+      >
         Login
       </Button>
     </form>

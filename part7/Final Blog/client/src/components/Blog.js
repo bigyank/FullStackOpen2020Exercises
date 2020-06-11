@@ -15,7 +15,7 @@ import BlogDetail from './BlogDetail';
 
 const useStyles = makeStyles({
   blogCard: {
-    marginTop: 10,
+    marginTop: 20,
   },
 });
 

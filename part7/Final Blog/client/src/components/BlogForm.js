@@ -3,11 +3,18 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 import { useFeild } from '../hooks/Hooks';
 import { addBlog } from '../reducers/blogReducer';
 import { addNotification } from '../reducers/notificationReducer';
+
+const useStyles = makeStyles({
+  btnStyle: {
+    marginTop: 10,
+  },
+});
 
 const InputFeild = ({ label, onChange, value }) => {
   return (
@@ -20,6 +27,7 @@ const InputFeild = ({ label, onChange, value }) => {
 const BlogForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const classes = useStyles();
 
   const [title, titleService] = useFeild('text');
   const [author, authorService] = useFeild('text');
@@ -43,10 +51,18 @@ const BlogForm = () => {
 
   return (
     <form onSubmit={submitBlog}>
+      <Typography color="primary" variant="overline">
+        Add New Blog
+      </Typography>
       <InputFeild label="Title" value={title} {...titleService} />
       <InputFeild label="Author" value={author} {...authorService} />
       <InputFeild label="URL" value={url} {...urlService} />
-      <Button type="submit" variant="outlined" color="primary">
+      <Button
+        className={classes.btnStyle}
+        type="submit"
+        variant="outlined"
+        color="primary"
+      >
         Submit
       </Button>
     </form>

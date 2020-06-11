@@ -20,7 +20,7 @@ export default function AlertDialog({ deleteBlog }) {
   };
 
   return (
-    <div>
+    <div style={{ display: 'inline' }}>
       <Button
         onClick={handleClickOpen}
         variant="contained"

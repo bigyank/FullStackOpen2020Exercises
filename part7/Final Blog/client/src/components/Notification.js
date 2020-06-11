@@ -6,12 +6,17 @@ import { Alert } from '@material-ui/lab';
 const Notification = () => {
   const notification = useSelector((state) => state.notification);
 
-  if (notification === null) {
-    return null;
-  }
+  const divStyle = {
+    height: 40,
+  };
+
   return (
-    <div>
-      <Alert severity={notification.type}> {notification.message} </Alert>
+    <div style={divStyle}>
+      {notification ? (
+        <Alert severity={notification.type}>{notification.message} </Alert>
+      ) : (
+        <div style={divStyle}>{null}</div>
+      )}
     </div>
   );
 };

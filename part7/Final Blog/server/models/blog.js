@@ -33,8 +33,6 @@ const blogSchema = new Schema({
 
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    console.log(returnedObject);
-
     returnedObject.id = returnedObject._id.toString();
 
     // this does'nt make any sense, too bad
