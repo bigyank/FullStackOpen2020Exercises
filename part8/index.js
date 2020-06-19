@@ -1,5 +1,6 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql, UserInputError } = require("apollo-server");
 const _ = require("lodash");
+const { v1: uuid } = require("uuid");
 
 let authors = [
   {
@@ -101,6 +102,16 @@ const typeDefs = gql`
     bookCount: Int!
     authorCount: Int!
   }
+
+  type Mutation {
+    addbook(
+      title: String!
+      author: String!
+      published: Int!
+      genres: [String!]!
+    ): Book
+    editAuthor(name: String!, born: Int!): Author
+  }
 `;
 
 const resolvers = {
@@ -133,6 +144,35 @@ const resolvers = {
       };
       authors = _.map(authors, addBookCount);
       return authors;
+    },
+  },
+
+  Mutation: {
+    addbook: (root, args) => {
+      if (_.find(books, { title: args.title })) {
+        throw new UserInputError("Dublicate Books not allowed", {
+          invalidArgs: args.title,
+        });
+      }
+
+      if (!_.find(authors, { name: args.author })) {
+        authors = [...authors, { id: uuid(), name: args.author }];
+      }
+
+      const newBook = { ...args, id: uuid() };
+      books = books.concat(newBook);
+      return newBook;
+    },
+    editAuthor: (root, args) => {
+      const author = _.find(authors, { name: args.name });
+      if (!author) {
+        return null;
+      }
+      const updatedAuthor = { ...author, born: args.born };
+      authors = _.map(authors, (author) =>
+        author.name === args.name ? updatedAuthor : author
+      );
+      return updatedAuthor;
     },
   },
 };
