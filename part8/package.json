@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^7.2.1",
     "apollo-server": "^2.15.0",
     "graphql": "^15.1.0",
+    "mongoose": "^5.9.20",
+    "mongoose-unique-validator": "^2.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"
