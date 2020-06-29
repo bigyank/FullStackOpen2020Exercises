@@ -1,5 +1,4 @@
 const { ApolloServer, gql, UserInputError } = require("apollo-server");
-const _ = require("lodash");
 require("../server/db/database");
 
 const Author = require("../server/schemas/Author");
@@ -29,7 +28,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addbook(
+    addBook(
       title: String!
       author: String!
       published: Int!
@@ -41,21 +40,22 @@ const typeDefs = gql`
 
 const resolvers = {
   Mutation: {
-    addbook: async (root, args) => {
-      const book = new Book(...args);
-      console.log(book);
-      return book.save();
+    addBook: async (root, args) => {
+      const author = await Author.findOne({ name: args.author });
+      if (!author) {
+        const newAuthor = await new Author({ name: args.author }).save();
+        return await new Book({ ...args, author: newAuthor._id }).save();
+      }
+      return await new Book({ ...args, author: author._id }).save();
+    },
+    editAuthor: async (root, args) => {
+      let author = await Author.findOne({ name: args.name });
+      author.born = args.born;
+      return author.save();
     },
   },
   Book: {
-    author: () => {
-      return {
-        name: "Default",
-        id: "12312sd",
-        born: 1234,
-        bookCount: 1,
-      };
-    },
+    author: (root) => Author.findById(root.author),
   },
 };
 
