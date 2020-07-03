@@ -68,12 +68,15 @@ const resolvers = {
     authorCount: () => Author.collection.countDocuments(),
     me: (root, args, { currentUser }) => currentUser,
   },
+
   Mutation: {
     addBook: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError("Not Authorized");
       }
+
       const author = await Author.findOne({ name: args.author });
+
       try {
         if (!author) {
           const newAuthor = await new Author({ name: args.author }).save();
@@ -84,6 +87,7 @@ const resolvers = {
         throw new UserInputError(error.message, { error });
       }
     },
+
     editAuthor: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError("Not Authorized");
@@ -95,6 +99,7 @@ const resolvers = {
       author.born = args.born;
       return author.save();
     },
+
     createUser: async (root, args) => {
       try {
         return await new User(args).save();
@@ -102,6 +107,7 @@ const resolvers = {
         throw new UserInputError(error.message, { error });
       }
     },
+
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username });
 
@@ -113,9 +119,11 @@ const resolvers = {
       };
     },
   },
+
   Book: {
     author: (root) => Author.findById(root.author),
   },
+
   Author: {
     bookCount: async (root) => {
       const booksofAuthor = await Book.find({ author: root._id });
