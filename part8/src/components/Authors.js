@@ -1,26 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useLazyQuery } from "@apollo/client";
+import React from "react";
 
-import { ALL_AUTHORS } from "../queries/queries";
-
-const Authors = (props) => {
-  const [authors, setAuthors] = useState(null);
-  const [getAuthors, result] = useLazyQuery(ALL_AUTHORS);
-
-  useEffect(() => {
-    getAuthors();
-    if (result.data) {
-      setAuthors(result.data.allAuthors);
-    }
-  }, [result.data]);
-
-  if (!props.show) {
+const Authors = ({ show, allAuthors }) => {
+  if (!show) {
     return null;
   }
 
-  if (!authors) {
+  if (allAuthors.loading) {
     return <p>Loading...</p>;
   }
+
+  const authors = allAuthors.data.allAuthors;
 
   return (
     <div>
@@ -33,7 +22,7 @@ const Authors = (props) => {
             <th>books</th>
           </tr>
           {authors.map((a) => (
-            <tr key={a.name}>
+            <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.bookCount}</td>

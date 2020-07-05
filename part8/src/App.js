@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Authors from "./components/Authors";
-import Books from "./components/Books";
-import NewBook from "./components/NewBook";
-import EditBirth from "./components/EditBirth";
-import Notify from "./components/Notify";
+import { useQuery } from "@apollo/client";
+
 import Login from "./components/Login";
+import Notify from "./components/Notify";
+import LoggedView from "./components/LoggedView";
+
+import { ALL_AUTHORS, ALL_BOOKS } from "./queries/queries";
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -18,6 +19,9 @@ const App = () => {
     }
   }, []);
 
+  const allAuthors = useQuery(ALL_AUTHORS);
+  const allBooks = useQuery(ALL_BOOKS);
+
   const notify = (message) => {
     setErrorMsg(message);
     setTimeout(() => {
@@ -26,9 +30,19 @@ const App = () => {
   };
 
   if (!token) {
-    return <Login setToken={setToken} />;
+    return (
+      <div>
+        <Notify errorMsg={errorMsg} />
+        <Login {...{ setToken, notify }} />
+      </div>
+    );
   }
-  return <div>logged in</div>;
+
+  return (
+    <LoggedView
+      {...{ allAuthors, allBooks, page, setPage, errorMsg, setToken, notify }}
+    />
+  );
 };
 
 export default App;
