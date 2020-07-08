@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../queries/queries";
 
-const Login = ({ setToken, notify }) => {
+const Login = ({ setToken, notify, show, setPage }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [login, result] = useMutation(LOGIN, {
@@ -16,6 +16,7 @@ const Login = ({ setToken, notify }) => {
       const token = result.data.login.value;
       setToken(token);
       localStorage.setItem("user", token);
+      setPage("authors");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result.data]);
@@ -26,6 +27,10 @@ const Login = ({ setToken, notify }) => {
     setPassword("");
     login({ variables: { username, password } });
   };
+
+  if (!show) {
+    return null;
+  }
 
   return (
     <form onSubmit={submitLogin}>
