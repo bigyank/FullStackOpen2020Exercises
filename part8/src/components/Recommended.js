@@ -9,10 +9,11 @@ const Recommended = ({ show, favGenre, allBooks }) => {
     return <p>Fetching data...</p>;
   }
 
-  let userFavGenre;
-  if (favGenre.data) {
-    userFavGenre = favGenre.data.me.favoriteGenre;
+  if (!favGenre.data || !favGenre.data.me) {
+    return <p>Fetching data...</p>;
   }
+
+  const userFavGenre = favGenre.data.me.favoriteGenre;
   console.log(userFavGenre);
 
   const books = allBooks.data.allBooks;
