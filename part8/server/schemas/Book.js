@@ -10,6 +10,7 @@ const schema = new mongoose.Schema({
   },
   published: {
     type: Number,
+    required: [true, "published date is necessary"],
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,

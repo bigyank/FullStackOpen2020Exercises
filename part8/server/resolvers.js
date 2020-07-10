@@ -1,10 +1,20 @@
 const { UserInputError, AuthenticationError } = require("apollo-server");
+const DataLoader = require("dataloader");
 const jwt = require("jsonwebtoken");
+const _ = require("lodash");
 const JWT_SECRET = "SECRET";
 
 const Author = require("./schemas/Author");
 const Book = require("./schemas/Book");
 const User = require("./schemas/User");
+
+const bookCountLoader = new DataLoader((keys) => getBookCount(keys));
+
+const getBookCount = async (ids) => {
+  const books = await Book.find({ author: { $in: ids } });
+  const groupById = _.groupBy(books, (book) => book.author);
+  return _.map(ids, (id) => groupById[id]);
+};
 
 const findOrCreateAuthor = async (name) => {
   const author = await Author.findOne({ name });
@@ -16,8 +26,20 @@ const findOrCreateAuthor = async (name) => {
 
 module.exports = {
   Query: {
-    allBooks: () => Book.find({}),
-    allAuthors: () => Author.find({}),
+    allBooks: async (root, { author, genre }) => {
+      const query = {};
+      if (author) {
+        const bookAuthor = await Author.findOne({ name: author });
+        query.author = bookAuthor.id;
+      }
+      if (genre) {
+        query.genres = { $in: [genre] };
+      }
+      return await Book.find(query).populate("author");
+    },
+    allAuthors: async () => {
+      return await Author.find({}).populate("author");
+    },
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     me: (root, args, { currentUser }) => currentUser,
@@ -44,9 +66,9 @@ module.exports = {
     },
 
     editAuthor: async (root, args, { currentUser }) => {
-      if (!currentUser) {
-        throw new AuthenticationError("Not Authorized");
-      }
+      // if (!currentUser) {
+      //   throw new AuthenticationError("Not Authorized");
+      // }
       let author = await Author.findOne({ name: args.name });
       if (!author) {
         throw new UserInputError("Invalid Author");
@@ -77,8 +99,8 @@ module.exports = {
 
   Author: {
     bookCount: async (root) => {
-      const booksofAuthor = await Book.find({ author: root._id });
-      return booksofAuthor.length;
+      const books = await bookCountLoader.load(root.id);
+      return books.length;
     },
   },
 };
