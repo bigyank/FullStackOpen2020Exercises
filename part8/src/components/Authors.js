@@ -1,6 +1,11 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
+import EditBirth from "./EditBirth";
+import { ALL_AUTHORS } from "../queries/queries";
 
-const Authors = ({ show, allAuthors }) => {
+const Authors = ({ show, notify }) => {
+  const allAuthors = useQuery(ALL_AUTHORS);
+
   if (!show) {
     return null;
   }
@@ -30,6 +35,7 @@ const Authors = ({ show, allAuthors }) => {
           ))}
         </tbody>
       </table>
+      <EditBirth show={show} notify={notify} />
     </div>
   );
 };

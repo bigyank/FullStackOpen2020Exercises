@@ -8,6 +8,7 @@ const Author = require("./schemas/Author");
 const Book = require("./schemas/Book");
 const User = require("./schemas/User");
 
+// dataloaders to count book number
 const bookCountLoader = new DataLoader((keys) => getBookCount(keys));
 
 const getBookCount = async (ids) => {
@@ -51,9 +52,9 @@ module.exports = {
       { title, author, published, genres },
       { currentUser }
     ) => {
-      // if (!currentUser) {
-      //   throw new AuthenticationError("Not Authorized");
-      // }
+      if (!currentUser) {
+        throw new AuthenticationError("Not Authorized");
+      }
       const book = new Book({ title, published, genres });
       try {
         book.author = await findOrCreateAuthor(author);
@@ -66,9 +67,9 @@ module.exports = {
     },
 
     editAuthor: async (root, args, { currentUser }) => {
-      // if (!currentUser) {
-      //   throw new AuthenticationError("Not Authorized");
-      // }
+      if (!currentUser) {
+        throw new AuthenticationError("Not Authorized");
+      }
       let author = await Author.findOne({ name: args.name });
       if (!author) {
         throw new UserInputError("Invalid Author");

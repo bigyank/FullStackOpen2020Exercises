@@ -1,25 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { LOGIN } from "../queries/queries";
+import { LOGIN, ME } from "../queries/queries";
 
 const Login = ({ setToken, notify, show, setPage }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [login, result] = useMutation(LOGIN, {
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("password");
+  const [login] = useMutation(LOGIN, {
+    refetchQueries: [{ query: ME }],
     onError: (error) => {
       notify(error.graphQLErrors[0].message);
     },
-  });
-
-  useEffect(() => {
-    if (result.data) {
-      const token = result.data.login.value;
+    onCompleted: (data) => {
+      const token = data.login.value;
       setToken(token);
       localStorage.setItem("user", token);
       setPage("authors");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result.data]);
+    },
+  });
+
+  // useEffect(() => {
+  //   if (result.data) {
+  //     const token = result.data.login.value;
+  //     setToken(token);
+  //     localStorage.setItem("user", token);
+  //     setPage("authors");
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [result.data, setPage, setToken]);
 
   const submitLogin = (event) => {
     event.preventDefault();

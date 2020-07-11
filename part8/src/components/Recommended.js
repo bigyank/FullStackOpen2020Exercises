@@ -1,44 +1,36 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
+import BookList from "./BookList";
+import { ME, ALL_BOOKS } from "../queries/queries";
 
-const Recommended = ({ show, favGenre, allBooks }) => {
-  if (!show) {
+const Recommended = ({ show }) => {
+  const allBooks = useQuery(ALL_BOOKS);
+  const meResult = useQuery(ME);
+
+  if (!show || !allBooks.data || !meResult.data) {
     return null;
   }
 
-  if (favGenre.loading || allBooks.loading) {
-    return <p>Fetching data...</p>;
-  }
+  console.log("local storage =>", localStorage);
 
-  if (!favGenre.data || !favGenre.data.me) {
-    return <p>Fetching data...</p>;
-  }
+  console.log("user =>", meResult.data);
 
-  const userFavGenre = favGenre.data.me.favoriteGenre;
-  console.log(userFavGenre);
+  const userFavGenre = meResult.data.me.favoriteGenre;
 
   const books = allBooks.data.allBooks;
-  const favBooks = books.filter((book) => book.genres.includes(userFavGenre));
+  const recommendedBooks = books.filter((book) =>
+    book.genres.includes(userFavGenre)
+  );
 
   return (
     <div>
-      <h2>books</h2>
-      <h3>According to your favourite genre</h3>
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
-          </tr>
-          {favBooks.map((a) => (
-            <tr key={a.id}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2>recommendations</h2>
+
+      <div>
+        books in your favorite genre <strong>{userFavGenre}</strong>
+      </div>
+
+      <BookList books={recommendedBooks} />
     </div>
   );
 };
