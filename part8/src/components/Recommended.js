@@ -1,21 +1,16 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import BookList from "./BookList";
-import { ME, ALL_BOOKS } from "../queries/queries";
+import { ALL_BOOKS } from "../queries/queries";
 
-const Recommended = ({ show }) => {
+const Recommended = ({ show, userFav }) => {
   const allBooks = useQuery(ALL_BOOKS);
-  const meResult = useQuery(ME);
 
-  if (!show || !allBooks.data || !meResult.data) {
+  if (!show || !allBooks.data || !userFav) {
     return null;
   }
 
-  console.log("local storage =>", localStorage);
-
-  console.log("user =>", meResult.data);
-
-  const userFavGenre = meResult.data.me.favoriteGenre;
+  const userFavGenre = userFav;
 
   const books = allBooks.data.allBooks;
   const recommendedBooks = books.filter((book) =>

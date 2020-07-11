@@ -71,6 +71,8 @@ module.exports = {
         throw new AuthenticationError("Not Authorized");
       }
       let author = await Author.findOne({ name: args.name });
+      console.log(author);
+
       if (!author) {
         throw new UserInputError("Invalid Author");
       }

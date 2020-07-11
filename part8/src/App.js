@@ -7,17 +7,24 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Login from "./components/Login";
 import Recommended from "./components/Recommended";
+import EditBirth from "./components/EditBirth";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [errorMsg, setErrorMsg] = useState(null);
   const [token, setToken] = useState(null);
+  const [userFav, setUserFav] = useState(null);
   const client = useApolloClient();
 
   useEffect(() => {
     const userToken = localStorage.getItem("user");
     if (userToken) {
       setToken(userToken);
+    }
+
+    const userFavGenre = localStorage.getItem("favGenre");
+    if (userFavGenre) {
+      setUserFav(userFavGenre);
     }
   }, []);
 
@@ -53,10 +60,14 @@ const App = () => {
       </div>
 
       <Authors show={page === "authors"} notify={notify} />
+      {token && <EditBirth show={page === "authors"} notify={notify} />}
       <Books show={page === "books"} />
       <NewBook show={page === "add"} notify={notify} />
-      <Recommended show={page === "recommended"} />
-      <Login show={page === "login"} {...{ setToken, notify, setPage }} />
+      <Recommended show={page === "recommended"} userFav={userFav} />
+      <Login
+        show={page === "login"}
+        {...{ setToken, notify, setPage, setUserFav }}
+      />
     </div>
   );
 };

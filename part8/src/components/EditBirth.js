@@ -9,6 +9,10 @@ const EditBirth = ({ show, notify }) => {
   const [author, setAuthor] = useState("");
   const [birth, setBirth] = useState("");
 
+  if (!show) {
+    return null;
+  }
+
   const handleEdit = (event) => {
     event.preventDefault();
 
@@ -17,10 +21,6 @@ const EditBirth = ({ show, notify }) => {
     setAuthor("");
     setBirth("");
   };
-
-  if (!show) {
-    return null;
-  }
 
   return (
     <div>

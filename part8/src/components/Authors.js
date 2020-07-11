@@ -1,6 +1,5 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
-import EditBirth from "./EditBirth";
 import { ALL_AUTHORS } from "../queries/queries";
 
 const Authors = ({ show, notify }) => {
@@ -35,7 +34,6 @@ const Authors = ({ show, notify }) => {
           ))}
         </tbody>
       </table>
-      <EditBirth show={show} notify={notify} />
     </div>
   );
 };
