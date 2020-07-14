@@ -8,34 +8,24 @@ interface exerciseValues {
   average: number;
 }
 
-interface terminalValues {
-  exerciseHours: Array<number>;
-  target: number;
-}
-
-const parseTerminal = (args: Array<string>): terminalValues => {
-  if (args.length < 10) throw new Error("Not enough arguments");
-  if (args.length > 10) throw new Error("Too many arguments");
-
-  const exerciseHours = args.slice(2, 9).map((value) => Number(value));
-  const target = Number(args.slice(9));
-
-  const isValidHours = exerciseHours.every((hour) => !isNaN(hour));
-
-  if (!isValidHours || isNaN(target)) {
-    throw new Error("invalid arguments");
-  }
-
-  return {
-    exerciseHours,
-    target,
-  };
-};
-
-const calculateExercise = (
+export const calculateExercise = (
   exerciseHours: Array<number>,
   target: number
 ): exerciseValues => {
+  if (!target || !exerciseHours) {
+    throw new Error("parameters missing");
+  }
+  if (!Array.isArray(exerciseHours)) {
+    throw new Error("malformatted parameters");
+  }
+
+  const hasNaNInDailyHours = exerciseHours.some((hours) => isNaN(hours));
+  target = Number(target);
+
+  if (isNaN(target) || hasNaNInDailyHours) {
+    throw new Error("malformatted parameters");
+  }
+
   const totalHours = exerciseHours.reduce((acc, current) => acc + current, 0);
 
   const periodLength = exerciseHours.length;
@@ -55,10 +45,3 @@ const calculateExercise = (
     ratingDescription,
   };
 };
-
-try {
-  const { exerciseHours, target } = parseTerminal(process.argv);
-  console.log(calculateExercise(exerciseHours, target));
-} catch (e) {
-  console.log("something went wrong:", e.message);
-}

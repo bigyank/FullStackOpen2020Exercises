@@ -1,21 +1,25 @@
-type bmi = (mass: any, height: number) => string;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type bmi = (querymass: any, queryheight: any) => string;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type parser = (mass: any, height: any) => parsedValues;
 
 interface parsedValues {
   mass: number;
   height: number;
 }
 
-const parseArgs = (args: Array<string>): parsedValues => {
-  if (args.length !== 4) throw new Error("improper amount of arguments");
+const parseArgs: parser = (mass, height) => {
+  if (!mass || !height) throw new Error("required fields missing");
 
-  if (isNaN(Number(args[2])) || isNaN(Number(args[3]))) {
+  if (isNaN(Number(mass)) || isNaN(Number(height))) {
     throw new Error("invalid arguments");
   }
 
-  return { mass: Number(args[2]), height: Number(args[3]) };
+  return { mass: Number(mass), height: Number(height) };
 };
 
-const calculateBMI: bmi = (mass, height) => {
+export const calculateBMI: bmi = (querymass, queryheight) => {
+  const { mass, height } = parseArgs(querymass, queryheight);
   const bmi = mass / Math.pow(height, 2);
   switch (true) {
     case bmi <= 16:
@@ -34,10 +38,3 @@ const calculateBMI: bmi = (mass, height) => {
       return "Obese Class III (Very severely obese) ";
   }
 };
-
-try {
-  const { mass, height } = parseArgs(process.argv);
-  console.log(calculateBMI(mass, height));
-} catch (e) {
-  console.log("something went wrong: ", e.message);
-}
