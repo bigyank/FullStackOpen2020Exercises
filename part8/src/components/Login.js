@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { LOGIN, ME } from "../queries/queries";
 
 const Login = ({ setToken, notify, show, setPage, setUserFav }) => {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("password");
-  const [getFavGenre, result] = useLazyQuery(ME);
+
+  const [getFavGenre] = useLazyQuery(ME, {
+    onCompleted: (data) => {
+      const favGenre = data.me.favoriteGenre;
+      setUserFav(favGenre);
+      localStorage.setItem("favGenre", favGenre);
+    },
+  });
 
   const [login] = useMutation(LOGIN, {
     onError: (error) => {
@@ -19,15 +26,6 @@ const Login = ({ setToken, notify, show, setPage, setUserFav }) => {
       setPage("authors");
     },
   });
-
-  useEffect(() => {
-    if (result.data) {
-      const favGenre = result.data.me.favoriteGenre;
-      setUserFav(favGenre);
-      localStorage.setItem("favGenre", favGenre);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result]);
 
   const submitLogin = (event) => {
     event.preventDefault();

@@ -10,11 +10,9 @@ const Recommended = ({ show, userFav }) => {
     return null;
   }
 
-  const userFavGenre = userFav;
-
   const books = allBooks.data.allBooks;
   const recommendedBooks = books.filter((book) =>
-    book.genres.includes(userFavGenre)
+    book.genres.includes(userFav)
   );
 
   return (
@@ -22,7 +20,7 @@ const Recommended = ({ show, userFav }) => {
       <h2>recommendations</h2>
 
       <div>
-        books in your favorite genre <strong>{userFavGenre}</strong>
+        books in your favorite genre <strong>{userFav}</strong>
       </div>
 
       <BookList books={recommendedBooks} />
