@@ -22,7 +22,7 @@
     "@typescript-eslint/parser": "^2.34.0",
     "eslint-config-react": "^1.1.7",
     "react-scripts": "3.3.0",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.7"
   },
   "scripts": {
     "start": "react-scripts start",
