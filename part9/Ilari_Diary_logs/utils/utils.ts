@@ -2,7 +2,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NewDiaryEntry, Weather, Visibility } from "../src/types";
 
-const toNewDiaryEntry = (object: any): NewDiaryEntry => {
+interface objectType {
+  date: any;
+  comment: any;
+  weather: any;
+  visibility: any;
+}
+
+const toNewDiaryEntry = (object: objectType): NewDiaryEntry => {
   const newEntry: NewDiaryEntry = {
     date: parseDate(object.date),
     comment: parseComment(object.comment),
@@ -22,14 +29,14 @@ const parseComment = (comment: any): string => {
 
 const parseDate = (date: any): string => {
   if (!date || !isDate(date) || !isString(date)) {
-    throw new Error("date is invalid");
+    throw new Error("invalid date");
   }
   return date;
 };
 
 const parseWeather = (weather: any): Weather => {
   if (!weather || !isWeather(weather)) {
-    throw new Error("Weather data is not correct");
+    throw new Error("invalid weather");
   }
   return weather;
 };
