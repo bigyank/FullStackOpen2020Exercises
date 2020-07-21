@@ -7,7 +7,7 @@ export interface diagnoses {
 export enum Gender {
   Male = "male",
   Female = "female",
-  NonBianary = "nonbinary",
+  NonBianary = "other",
 }
 
 export interface patients {
