@@ -1,13 +1,5 @@
 import React from "react";
-
-interface CourseTypes {
-  name: string;
-  exerciseCount: number;
-}
-
-interface ContentTypes {
-  courseContents: Array<CourseTypes>;
-}
+import { ContentTypes } from "./types";
 
 const Content: React.FC<ContentTypes> = ({ courseContents }) => {
   return (

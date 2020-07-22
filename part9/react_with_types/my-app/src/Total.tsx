@@ -1,19 +1,11 @@
 import React from "react";
+import { ContentTypes } from "./types";
 
-interface ContentType {
-  name: string;
-  exerciseCount: number;
-}
-
-interface CourseType {
-  courseContents: Array<ContentType>;
-}
-
-const Total: React.FC<CourseType> = ({ courseContents }) => {
+const Total: React.FC<ContentTypes> = ({ courseContents }) => {
   return (
     <div>
       <p>
-        Total Courses :{" "}
+        Total Courses :
         {courseContents.reduce(
           (acc, content) => (acc += content.exerciseCount),
           0

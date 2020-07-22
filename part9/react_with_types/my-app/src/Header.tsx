@@ -1,8 +1,5 @@
 import React from "react";
-
-interface HeaderTypes {
-  title: string;
-}
+import { HeaderTypes } from "./types";
 
 const Header: React.FC<HeaderTypes> = ({ title }) => {
   return (
